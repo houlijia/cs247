@@ -1,0 +1,77 @@
+select i in cs_do_quant cs_mean_sd_test cs_matrix_test cs_domultivec_test \
+	cs_decode_parser_test cs_quantize_test cs_compGrad_x_test \
+	cs_complgrngn_test cs_dbg_test cs_helper_test cs_perm_mlseq_test
+do
+	PROG=$i
+	break ;
+done
+
+set -e
+cd ..
+pwd
+make
+cd -
+make
+
+#if [ $? -ne 0 ]
+#then
+
+#fi
+
+#PROG=./cs_decode_parser_test
+#PROG=./cs_quantize_test
+
+#rm -f $PROG.out
+
+echo "running $PROG .... "
+
+set +e
+
+date > q.out
+echo $PROG >> q.out
+echo "---------------------------------------------------" >> q.out
+
+case $PROG in
+cs_do_quant)
+	./$PROG  >> q.out 2>&1
+	;;
+cs_mean_sd_test)
+	./$PROG  >> q.out 2>&1
+	;;
+cs_decode_parser_test)
+	./$PROG /tmp/all_cif_300.csvid >> q.out 2>&1
+	;;
+cs_quantize_test)
+	./$PROG /tmp/all_cif_300.csvid >> q.out 2>&1
+	;;
+cs_perm_mlseq_test)
+	./$PROG >> q.out 2>&1
+	;;
+cs_helper_test)
+	./$PROG >> q.out 2>&1
+	;;
+cs_compGrad_x_test)
+	./$PROG >> q.out 2>&1
+	;;
+cs_matrix_test)
+	./$PROG >> q.out 2>&1
+	;;
+cs_domultivec_test)
+	./$PROG >> q.out 2>&1
+	;;
+cs_dbg_test|cs_complgrngn_test)
+	./$PROG >> q.out 2>&1
+	;;
+esac
+	
+date
+ll q.out
+
+echo "DIFF ------------------------------------------------------------------------- B"
+diff q.out $PROG.out
+echo "DIFF ------------------------------------------------------------------------- E"
+
+echo -n "vi q.out ==> "
+read x
+
+vi q.out

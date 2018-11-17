@@ -1,0 +1,148 @@
+echo -n "-s for swap -y for y_only ==> "
+read x
+
+select FFF in motion_small motion q buf z_overlap b_test razi_test pp_test p_test d.192 container_cif_300.yuv contain_cif_2_352x288.yuv
+do
+	break 
+done
+
+echo $FFF ....................
+
+select BBB in \
+2x2x1 \
+2x4x1 2x4x2 \
+4x4x4 \
+4x6x1 \
+4x8x1 4x8x2 \
+50x40x1 \
+64x32x1 \
+88x72x1 88x72x5 88x72x10 88x72x20 88x72x30 88x72x40 88x72x50 \
+176x144x5 176x144x10 176x144x20 176x144x30 176x144x40 176x144x50 \
+352x288x1 352x288x5 352x288x10 352x288x20 352x288x30 352x288x40 352x288x50
+do
+	break
+done
+
+#echo $BBB | awk '{ print "BBBx="$1"\n" "BBBy="$2"\n" "BBBz="$3 }' FS='x'
+BBBx=`echo $BBB | awk '{ print $1 }' FS='x'`
+BBBy=`echo $BBB | awk '{ print $2 }' FS='x'`
+BBBz=`echo $BBB | awk '{ print $3 }' FS='x'`
+
+echo === blk === $BBBx $BBBy $BBBz
+
+set -x
+
+case $FFF in
+motion_small)
+	#./yuvb420pcs -i ./PETS2000_test_126_32.yuv -p /home/ldl/mr/cs/cs/lfsr -o q \
+	./yuvb420pcs -i ./data.seq.b -p /home/ldl/mr/cs/cs/lfsr -o q \
+		-y \
+		-n \
+		-q \
+		-d 40 40 \
+		-b 20 20 5 \
+		-m 2 2 2 \
+		-g 1 1 \
+		-c 4 4 2 \
+		-z 50 \
+		-f 0x60000 \
+		> q.out 2>&1
+
+	echo exit is .... $?
+	;;
+motion)
+	#./yuvb420pcs -i ./data.seq.b -p /home/ldl/mr/cs/cs/lfsr -o q \
+	#./yuvb420pcs -i ./data.rand -p /home/ldl/mr/cs/cs/lfsr -o q \
+	#./yuvb420pcs -i ./PETS2000_test_yonly.yuv -p /home/ldl/mr/cs/cs/lfsr -o q \
+	./yuvb420pcs -i ./PETS2000_test_126_32.yuv -p /home/ldl/mr/cs/cs/lfsr -o q \
+		-y \
+		-n \
+		-q \
+		-d 576 768 \
+		-e 36 48 5 \
+		-b 72 96 8 \
+		-m 6 6 4 \
+		-g 2 2 \
+		-a 8 8 \
+		-O 36 48 0 \
+		-c 8 8 4 \
+		-z 15 \
+		-f 0x1000 \
+		> q.out 2>&1
+
+	echo exit is .... $?
+	;;
+
+q)
+	./yuvb420pcs -i ./data.seq.b -y -d 576 768 -e 36 48 5 -b 72 96 8 -m 6 6 4 -g 2 2 -a 8 8 -O 36 48 0 -p /home/ldl/mr/cs/cs/lfsr -n -o q -c 8 8 4 -z 15 >q.out 2>&1
+	echo exit is .... $?
+
+	#./yuvb420pcs -i ./data.seq.b -y -d 16 16 -e 4 0 4 -b 8 8 4 -m 1 1 3 -g 1 1 -a 2 2 -O 4 4 0 -p /home/ldl/mr/cs/cs/lfsr -n -o q -c 8 4 2 -z 90 >q.out 2>&1
+
+	;;
+z_overlap)
+ 	./yuvb420pcs -O 1 -i ./data.seq.b -d 4 4 -n -o q -b 4 4 4 $* > q.out 2>&1
+
+	;;
+
+q_test)
+ 	#./yuvb420pcs -i /home/ldl/tmp/vlserver/MLtest_112612/x1.2000.b -p /home/ldl/mr/cs/cs/lfsr -d 50 40 -o q -b 50 40 1 -y $* > q.out 2>&1
+	;;
+
+b_test)
+ 	./yuvb420pcs -n -i ./perm.4.4.b -p /home/ldl/mr/cs/cs/lfsr -B 5 7 -d 2 2 -o q -b 2 2 1 -y $* > q.out 2>&1
+
+ 	#./yuvb420pcs -i /home/ldl/tmp/vlserver/MLtest_112612/x1.2000.b -p /home/ldl/mr/cs/cs/lfsr -d 50 40 -o q -b 50 40 1 -y $* > q.out 2>&1
+	;;
+
+razi_test)
+ 	./yuvb420pcs -i /home/ldl/tmp/vlserver/MLtest_112612/x1.dat.2000x10.b -p /home/ldl/mr/cs/cs/lfsr -d 50 40 -o q -b 50 40 1 -y $* > q.out 2>&1
+
+ 	#./yuvb420pcs -i /home/ldl/tmp/vlserver/MLtest_112612/x1.2000.b -p /home/ldl/mr/cs/cs/lfsr -d 50 40 -o q -b 50 40 1 -y $* > q.out 2>&1
+	;;
+buf)
+ 	./yuvb420pcs -i /home/ldl/tmp/vlserver/MLtest_112612/x1.dat.2000x10.b -p /home/ldl/mr/cs/cs/lfsr -d 50 40 -o q -b 50 40 1 -y $* > q.out 2>&1
+ 	#./yuvb420pcs -i /home/ldl/tmp/vlserver/MLtest_112612/x1.dat.2000x10.b -p /home/ldl/mr/cs/cs/lfsr -d 576 768 -o q -b 72 96 8 -a 8 8 -y $* > q.out 2>&1
+	#yuvb420pcs -p . -i q -o qq -d 576 768 -e 36 48 0 -b 72 96 8 -a 8 8
+
+	;;
+
+d.192)
+	./yuvb420pcs -i d.192 -d 4 8 -o q -b $BBBx $BBBy $BBBz > q.out 2>&1
+	;;
+
+container_cif_300.yuv)
+	./yuvb420pcs -i ~/mr/cuda/video/container_cif_300.yuv -d 352 288 -o q -b $BBBx $BBBy $BBBz $*  > q.out 2>&1
+	;;
+
+contain_cif_2_352x288.yuv)
+ 	./yuvb420pcs -i ~/mr/cuda/video/contain_cif_2_352x288.yuv -d 352 288 -o q -b $BBBx $BBBy $BBBz $* > q.out 2>&1
+	;;
+
+pp_test)
+ 	#./yuvb420pcs -n -i /home/ldl/mr/cs/cs/cs_cuda/tool/q.2048 -p /home/ldl/mr/cs/cs/lfsr -d 2 4 -o q -y -q -b $BBBx $BBBy $BBBz $* > q.out 2>&1
+ 	#./yuvb420pcs -i /home/ldl/mr/cs/cs/cs_cuda/tool/q.2048 -p /home/ldl/mr/cs/cs/lfsr -d 2 4 -o q -y -P perm.8.seq.b perm.8.seq.b -q -b $BBBx $BBBy $BBBz $* > q.out 2>&1
+
+ 	# ./yuvb420pcs -i /home/ldl/mr/cs/cs/cs_cuda/tool/q.2048 -p /home/ldl/mr/cs/cs/lfsr -d 2 4 -o q -y -P perm.8.b perm.8.b -b $BBBx $BBBy $BBBz $* > q.out 2>&1
+
+ 	./yuvb420pcs -n -i /home/ldl/mr/cs/cs/cs_cuda/x.dat.b -p /home/ldl/mr/cs/cs/lfsr -d 50 40 -o q -y -P q.pr.dat q.ipl.dat -b $BBBx $BBBy $BBBz $* > q.out 2>&1
+	;;
+
+p_test)
+ 	./yuvb420pcs -i /home/ldl/mr/cs/cs/cs_cuda/tool/q.2048 -p /home/ldl/mr/cs/cs/lfsr -d 4 6 -o q -b $BBBx $BBBy $BBBz $* > q.out 2>&1
+
+ 	#./yuvb420pcs -i /home/ldl/mr/cs/cs/cs_cuda/tool/q.96 -p /home/ldl/mr/cs/cs/lfsr -d 4 8 -o q -b $BBBx $BBBy $BBBz $* > q.out 2>&1
+
+ 	#./yuvb420pcs -i /home/ldl/mr/cs/cs/cs_cuda/tool/q.96 -p /home/ldl/mr/cs/cs/lfsr -d 4 8 -o q -b $BBBx $BBBy $BBBz $* > q.out 2>&1
+
+ 	#./yuvb420pcs -i /home/ldl/mr/cs/cs/cs_cuda/tool/q.1152 -p /home/ldl/mr/cs/cs/lfsr -d 12 16 -o q -b $BBBx $BBBy $BBBz $* > q.out 2>&1
+
+ 	# ./yuvb420pcs -i ~/mr/cuda/video/contain_cif_2_352x288.yuv -p /home/ldl/mr/cs/cs/lfsr -d 352 288 -o q -b $BBBx $BBBy $BBBz $* > q.out 2>&1
+	;;
+esac
+ 
+ll q q.out
+
+#more q.out
+
+set +x

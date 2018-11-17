@@ -1,0 +1,160 @@
+#set -o
+#set -x
+
+SCRIPT_DIR=`dirname "$(readlink -f "$0" )"`
+EXE_DIR="$( cd $SCRIPT_DIR/../../../../tst && pwd )"
+
+# Add configuration to EXE_DIR
+CFGS=`ls $EXE_DIR`
+case $( echo $CFGS | wc -w ) in
+  0) echo "No configuration is built"; exit 1 ;;
+  1) EXE_DIR=$EXE_DIR/$CFGS ; 
+     echo "Using configuration $CFGS" 
+     ;;
+  *) echo "Select build configuration:"
+     select CFG in $CFGS
+     do
+	 if [ -z "$CFG" ] ; then echo ' ???? Illegal answer !!!!'; exit 1; fi
+	 break
+     done
+     EXE_DIR=$EXE_DIR/$CFG
+     ;;
+esac
+
+# Add architecture to EXE_DIR
+ARCHS=`ls $EXE_DIR`
+case $( echo $ARCHS | wc -w ) in
+  0) echo "No architecture is built in $EXE_DIR"; exit 1 ;;
+  1) EXE_DIR=$EXE_DIR/$ARCHS; 
+     echo "Using architecture $ARCHS" 
+    ;;
+  *) echo "Select architecture:"
+     select ARCH in $ARCHS
+     do
+	 if [ -z "ARCH" ] ; then echo ' ???? Illegal answer !!!!'; exit 1; fi
+	 break
+     done
+     EXE_DIR=$EXE_DIR/$ARCH
+     ;;
+esac
+EXE_DIR=$EXE_DIR/exe/acq_ana.file
+
+# Select the applications
+APPS=`ls $EXE_DIR`
+case $( echo $APPS | wc -w ) in
+  0) echo "No architecture is built in $EXE_DIR"; exit 1 ;;
+  1) APP=$APPS;
+    TARG=$EXE_DIR/$APP; 
+     echo "Using application $APP" 
+    ;;
+  *) echo "Select application:"
+     select APP in $APPS
+     do
+	 if [ -z "APP" ] ; then echo ' ???? Illegal answer !!!!'; exit 1; fi
+	 break
+     done
+     TARG=$EXE_DIR/$APP
+     ;;
+esac
+echo "APP is $TARG"
+
+#acq_ana_ipcam_80x60
+echo "Select test condtions"
+select FFF in *.json
+do
+	break 
+done
+
+echo "-------------------------------------------------------------------------------------"
+LOG=1
+echo -n "LOG? [1] ==> "
+read LOG
+
+if [ "$LOG" == "" ]
+then
+	LOG=1 
+fi
+
+echo LOG ... \"$LOG\"
+
+FFF=$SCRIPT_DIR/`echo $FFF | cut -f1 -d'.'`
+
+echo $FFF ....................
+
+case $FFF in
+*)
+	echo "$TARG -f $FFF.json"
+	if [ "$LOG" -eq 1 ]
+	then
+	    mkdir -p ${APP}.d
+	    FFFF=${APP}.d/${FFF}.out
+	    echo "Log in $FFFF"
+	    date > $FFFF
+	    pwd
+	    set -x
+	    $TARG -f $FFF.json >> $FFFF 2>&1
+	    result=$?
+	    date >> $FFFF
+	    # ls -l $FFFF.out $TARG
+	    # echo -n "vi ==> ?"
+	    # read x
+	    # vi $FFFF.out
+	else
+	    date
+	    $TARG -f $FFF.json
+	    result = $? 
+	    date
+	fi
+	exit $result;
+	;;
+
+ipcam_leg_only_no_uv|ipcam_ldl_no_uv|pets_test_enc|acq_ana_vlc|acq_ana_webcam)
+	date > $FFF.out
+	./yuvb420pcs -f $FFF.json >> $FFF.out 2>&1
+	;;
+recon.json)
+	./yuvb420pcs -f recon.json
+	;;
+config.json)
+	./yuvb420pcs -f config.json
+	;;
+enc_cmp)
+	set -x
+	cd /home/ldl/mr/baotou_cs/test_data
+	rm PETS2000_test.yuv
+	ln -s G/* .
+	cd -
+	date > q0
+	./yuvb420pcs -f pets_test_enc.json >> q0 2>&1
+	grep arrow q0 > qqq0
+
+	cd /home/ldl/mr/baotou_cs/test_data
+	rm PETS2000_test.yuv
+	ln -s G-24/* .
+	cd -
+	date > q24
+	./yuvb420pcs -f pets_test_enc.json >> q24 2>&1
+	grep arrow q24 > qqq24
+
+	set +x
+
+	echo "qqq0 --------------------------------------------------------------------------"
+	cat qqq0
+	echo "qqq24 --------------------------------------------------------------------------"
+	cat qqq24
+	echo "--------------------------------------------------------------------------"
+
+	cp q0 qq0
+	cp q24 qq24
+
+	echo -n "vi ==>? "
+	read x
+	vi qq0
+	;;
+esac
+
+echo $? ...................................................... DONE
+
+cp $FFF.out q
+ls -l $FFF.out q
+

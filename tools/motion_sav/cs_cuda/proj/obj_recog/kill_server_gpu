@@ -1,0 +1,17 @@
+ps -ef | grep iserver_gpu
+SPID=`ps -ef | grep "iserver_gpu -P " | grep 58789 | awk '{ print $2}'`
+echo ------------------------------------------------------------------
+kill -9 $SPID
+echo ------------------------------------------------------------------
+ps -ef | grep iserver_gpu
+
+exit
+
+ps -ef | grep iserver_gpu_thread
+SPID=`ps -ef | grep "iserver_gpu_thread -P " | grep 58788 | awk '{ print $2}'`
+echo ------------------------------------------------------------------
+kill -9 $SPID
+echo ------------------------------------------------------------------
+ps -ef | grep iserver_gpu_thread
+
+

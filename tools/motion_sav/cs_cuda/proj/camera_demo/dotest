@@ -1,0 +1,147 @@
+select FFF in iserver iclient iserver_gpu iserver_gpu_thread
+do
+	break 
+done
+
+#make $FFF
+
+set -e
+#set -x
+
+rm -f q
+
+PPP=58787
+PPP_GPU=58788
+
+case $FFF in
+iserver_gpu_thread)
+
+	cd cs_misc
+	make
+	cd -
+	make iserver_gpu_thread
+
+	kill_server_gpu
+	rm -f iserver_gpu_thread.out
+	#iserver -f -P $PPP -i iserver.out > q.server 2>&1 &
+	iserver_gpu_thread -P $PPP_GPU -i iserver_gpu_thread.out > q.server_gpu_thread 2>&1 &
+
+	echo "----------------------------------------------------------------"
+	ps -ef | grep iserver_gpu_thread
+	echo "----------------------------------------------------------------"
+
+	#tail -f q.server_gpu
+
+	;;
+
+iserver_gpu)
+
+	cd cs_misc
+	make
+	cd -
+	make iserver_gpu
+
+	kill_server_gpu
+	rm -f iserver_gpu.out
+	#iserver -f -P $PPP -i iserver.out > q.server 2>&1 &
+	iserver_gpu -P $PPP_GPU -i iserver_gpu.out > q.server_gpu 2>&1 &
+
+	echo "----------------------------------------------------------------"
+	ps -ef | grep iserver_gpu
+	echo "----------------------------------------------------------------"
+
+	#tail -f q.server_gpu
+
+	;;
+
+iserver)
+
+	make iserver
+	kill_server
+	rm -f iserver.out
+	#iserver -f -P $PPP -i iserver.out > q.server 2>&1 &
+	iserver -P $PPP -i iserver.out > q.server 2>&1 &
+
+	echo "----------------------------------------------------------------"
+	ps -ef | grep iserver
+	echo "----------------------------------------------------------------"
+
+	#tail -f q.server
+
+	;;
+
+iclient)
+	make iclient
+	#serial_wht3 10 20 serial_wht q.out 10 >q 2>&1
+	cd /home/ldl/mr/baotou_cs/test_data
+	QQQQ=`ls *.bgr | cut -f 1 -d"."`
+	select FFF in $QQQQ
+	do
+		break
+	done
+
+	ll /home/ldl/mr/baotou_cs/test_data/$FFF.bgr
+
+	cd -
+
+	rm -f $FFF.out
+
+	echo -n "NET INTERFACE ?"
+	read x
+	if [ "$x" == 'y' ]
+	then
+		echo -n "GPU ?"
+		read x
+		if [ "$x" == 'y' ]
+		then
+			NET_OPTIONS="-P $PPP_GPU -h 127.0.0.1"
+		else
+			NET_OPTIONS="-P $PPP -h 127.0.0.1"	
+		fi
+
+		#iserver -P $PPP -i iserver.out &
+		#sleep 2
+	fi
+
+	echo "COMPRESSION RATIO "
+	select CCC in 5 10 15 20 25 30 50 100
+	do
+		break ;
+	done
+
+	set -x
+
+	case $FFF in
+	pic_640x480)
+		iclient $NET_OPTIONS -d 640 480 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out -p $CCC >q 2>&1
+		;;
+	wht_640x480_512x480)
+		iclient $NET_OPTIONS -d 512 480 -t 640 480 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out -p $CCC >q 2>&1
+		;;
+	wht_640x480)
+		iclient $NET_OPTIONS -d 640 480 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out -p $CCC >q 2>&1
+		;;
+	wht)
+		iclient $NET_OPTIONS -d 640 480 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out -p $CCC >q 2>&1
+		;;
+	wht_1280x720_1_1028x720)
+		iclient $NET_OPTIONS -d 1028 720 -t 1280 720 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out -p $CCC >q 2>&1
+		;;
+	wht_1280x720_1)
+		iclient $NET_OPTIONS -d 1280 720 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out -p $CCC >q 2>&1
+		;;
+	wht_1280x720)
+		iclient $NET_OPTIONS -d 1280 720 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out -p $CCC >q 2>&1
+		;;
+	esac
+
+	datab2a_2 -i $FFF.out > $FFF.matlab
+	#vi $FFF.matlab
+
+	ll $FFF.out $FFF.matlab
+
+	#echo -n "vi q ==> "
+	#read x
+	#vi q
+	;;
+esac

@@ -1,0 +1,50 @@
+ /** \file
+   class for saving and restoring mex context
+ */ 
+
+#include "mex_context.h"
+#include "mex_tools.h"
+
+#if defined(__linux) || defined(__linux__) || defined(linux)
+#include <errno.h>
+#include <string.h>
+#include <time.h>
+#endif
+
+const MexContext* MexContext::getContext()
+{
+  if(mex_context == NULL) {
+    mex_context = new MexContext();
+  }
+  return mex_context;
+}
+
+const MexContext* MexContext::resetContext()
+{
+  mex_context = static_cast<MexContext *>(mexGetPtrFromMatlab("mex_context_val")); 
+  if(mex_context == NULL) {
+    mex_context = new MexContext();
+  }
+  return mex_context;
+}
+
+void MexContext::deleteContext()
+{
+  setContext();
+  delete mex_context;
+  mex_context = NULL;
+}
+
+MexContext::MexContext()
+{}
+
+MexContext::~MexContext()
+{
+  //* Delete all entries
+  for(backup_t::iterator pos=backup.begin(); pos != backup.end(); pos++) {
+    delete pos->second;
+    pos->second = NULL;
+  }
+}
+
+MexContext * MexContext::mex_context = NULL;

@@ -1,0 +1,150 @@
+/**
+   \file 
+
+   MEX functions to perform inverse Walsh-Hadamard transform on a vector or
+   the columns of a matrix
+ */
+
+#include <string.h>
+
+#include "mex.h"
+#include "mex_tools.h"
+#include "mex_assert.h"
+#include "CudaDevInfo.h"
+#include "wht.h"
+
+static char const * const errId = "iwht_mex:InvalidInput";
+
+/**
+   This MEX function performs inverse Walsh-Hadamard transform on the columns
+   of a matrix, that is, the matrix is multiplied (on the left) by the inverse
+   WHT matrix.
+
+   Input:
+     prhs[0] - Input matrix should be real or double, with a number of rows
+               being a power of 2.
+     prhs[1] - (logical). If true perform forward transform, else perform
+               invrerse transform. Default = false. Note that the forward
+               transform is the inverse transform followed by division by
+               the matrix order.
+
+   Output:
+     plhs[0] - Output matrix, same size and type as the input matirx.
+
+   Input can be either on GPU or on CPU. Outputs are in the same place
+   as the input.
+ */
+
+void mexFunction(int nlhs, mxArray *plhs[],
+                 int nrhs, mxArray const *prhs[])
+{
+  mxClassID class_id;
+  mwSize nr, nc;
+  void *vec;
+  
+  // Check correctness and get input information
+  mex_assert(((nlhs==1 || nlhs==2) && nrhs == 1),
+    (errId,"Should have 1 or 2 input arguments and 1 output arguments"));
+
+  bool fwd_trnsfrm;
+  if(nlhs == 1)
+    fwd_trnsfrm = false;
+  else {
+    mex_assert(mxIsLogicalScalar(plhs[1]),
+	       (errId, "2nd input argument should be a logical scalar"));
+    fwd_trnsfrm = mxIsLogicalScalarTrue(plhs[1]);
+  }
+#ifdef __NVCC__
+
+  int is_gpu = mxIsGPUArray(prhs[0]);
+  mxGPUArray *pr;
+  
+  if(is_gpu) {
+    pr = mxGPUCopyFromMxArray(prhs[0]);
+    class_id = mxGPUGetClassID(pr);
+    
+    mex_assert(mxGPUGetComplexity(pr) == mxREAL && 
+	       mxGPUGetNumberOfDimensions(pr) == 2 &&
+	       (class_id  == mxSINGLE_CLASS || class_id == mxDOUBLE_CLASS),
+	       (errId, "First argument must be a real float (single or double) 2D matrix"));
+
+    mxGPUGetMatDims(pr, nr, nc);
+    mex_assert(nr == 0 || is_pwr_of_2(nr), 
+	       (errId, "Number of rows must be zero or power of 2"));
+
+    vec = mxGPUGetData(pr);
+
+    if (nr*nc > 0) {
+      if(fwd_trnsfrm) {
+	switch(class_id) {
+	case mxSINGLE_CLASS:
+	  h_wht((float *)(vec), size_t(nr), size_t(nc));
+	  break;
+	case mxDOUBLE_CLASS:
+	  h_wht((double *)(vec), size_t(nr), size_t(nc));
+	  break;
+	}
+      }
+      else {
+	switch(class_id) {
+	case mxSINGLE_CLASS:
+	  h_iwht((float *)(vec), size_t(nr), size_t(nc));
+	  break;
+	case mxDOUBLE_CLASS:
+	  h_iwht((double *)(vec), size_t(nr), size_t(nc));
+	  break;
+	}
+      }
+    }
+
+    plhs[0] = mxGPUCreateMxArrayOnGPU(pr);
+    mxGPUDestroyGPUArray(pr);
+     
+  }
+  else {
+#endif // #ifdef __NVCC__
+    
+    class_id = mxGetClassID(prhs[0]);
+    mex_assert(!mxIsComplex(prhs[0]) && 
+	       mxGetNumberOfDimensions(prhs[0]) == 2 &&
+	       (class_id  == mxSINGLE_CLASS || class_id == mxDOUBLE_CLASS),
+	       (errId, "First argument must be a real float (single or double) 2D matrix"));
+    
+    nr = mxGetM(prhs[0]);
+    nc = mxGetN(prhs[0]);
+    mwSize nv = nr*nc;
+
+    mex_assert(nr == 0 || is_pwr_of_2(nr), 
+	       (errId, "Number of rows must be zero or power of 2"));
+
+    plhs[0] = mxCreateNumericMatrix(nr, nc, class_id, mxREAL);
+    vec = mxGetData(plhs[0]);
+
+    if (nv > 0) {
+      memcpy(vec, mxGetData(prhs[0]), nv*mxClassID_size(class_id));
+      if(fwd_trnsfrm) {
+	switch(class_id) {
+	case mxSINGLE_CLASS:
+	  c_wht((float *)(vec), nr, nc);
+	  break;
+	case mxDOUBLE_CLASS:
+	  c_wht((double *)(vec), nr, nc);
+	  break;
+	}
+      }
+      else{
+	switch(class_id) {
+	case mxSINGLE_CLASS:
+	  c_iwht((float *)(vec), nr, nc);
+	  break;
+	case mxDOUBLE_CLASS:
+	  c_iwht((double *)(vec), nr, nc);
+	  break;
+	}
+      }
+    }
+    
+#ifdef __NVCC__
+  }
+#endif // #ifdef __NVC
+}

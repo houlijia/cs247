@@ -1,0 +1,5 @@
+for i in *.c
+do
+cc -c $i
+echo $i ............
+done

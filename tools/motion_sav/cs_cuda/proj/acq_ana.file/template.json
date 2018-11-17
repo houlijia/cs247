@@ -1,0 +1,102 @@
+{
+	// this config is for analysis purpose ...
+
+	// -a : adjustment add 0 to x/y, top and right, per block
+	"adj_x" : 8,
+	"adj_y" : 8,
+
+	// -f : debug flag :
+	// "dbg_flag" :
+
+	// -p : do :ermutation 
+	"do_permutation" : 1,
+	"permdir" : "../../../lfsr",
+
+	// -I : video src
+	"video_source" : 3, // 1: ipcam 2:webcam 3:file
+	"video_src" : "/home/ldl/mr/baotou_cs/test_data/ipcam_leg_only_no_uv.yuv", // video file
+	"video_src" : "http://PTSdisplay:ALUsurv@135.112.150.72:58006/axis-cgi/mjpg/video.cgi?resolution=640x480&req_fps=30&.mjpg", // ipcam
+	"video_src" : "rtsp://135.104.120.33:8554/ttt", // vlc streaming
+	"video_src" : "0",	// webcam
+
+	"do_display" : 1,	// enable the debug local video display
+	"fps" : 10,
+	"ignore_edge" : 1,	// ignore the motion at the edge of the block
+
+	// -z : comp_ratio
+	"comp_ratio" : 10,	// in % ... so this is 10 percent
+
+	// -m : motion detection, so the scope of the M.D. detection is 25, 25 and 3
+	"md_x" : 12,
+	"md_y" : 12,
+	"md_z" : 3,
+
+	// -c : cube ... the minimum size of the "inner block".  this is the measurements we
+	// keep for this block.  the purpose is to maintain 
+	"cubex" : 8,
+	"cubey" : 8,
+	"cubez" : 4,
+
+	// -e : frame expansion	... expansion at the frame level, zadd just append with 0
+	"xadd" : 80,
+	"yadd" : 60,
+	"zadd" : 4,
+
+	// -g : edge ... the size to determined the value for edge detection
+	// the block is 5x5 in this case
+	"edge_x" : 2,
+	"edge_y" : 2,
+
+	// -T : display threshold 	// /motion_dection arrow display threshold ...
+	// "disp_th_x" :
+	// "disp_th_y" :
+
+	// -d : frame size
+	"frame_x" : 640,
+	"frame_y" : 480,
+
+	// -n : do not seek, if input is a file, and the uv portion have been deleted
+	"do_not_seek" : 1,
+
+	// -F : md output file, OLD format for L.O'gorman 
+	"md_outputfile" : "q.csv",
+
+	// -o : output file name.  std out ... for dbg purpose
+	"foutname" : "q" ,
+
+	// -q
+	// "do_one" : ... number of block/frame to process, good for dbg.
+
+	"do_one" : 2,
+
+	// -s ... endian
+	// "do_swap" :
+
+	// -y ... do y component only.  no "uv" processing.  this is the only mode
+	// supported
+	"y_only" : 1, 	
+
+	// -O : overlap	... at block level
+	"overlap_x" : 80,
+	"overlap_y" : 60,
+	"overlap_z" : 0,
+
+	// -w : weight scheme
+	"weight_scheme" : 3,
+
+	// -b : block size ... block size, read z_block frames at a time
+	"x_block" : 160,
+	"y_block" : 120,
+	"z_block" : 7, 
+
+	// reconstruction
+
+	"reconstruction" : 0
+
+	// global -- not configurable ... derived
+
+	// int do_analysis ;
+	// int do_block    ;
+	// int do_comp_ratio ;
+	// int do_interpolate ;
+}

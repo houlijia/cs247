@@ -1,0 +1,218 @@
+select FFF in iserver_gpu2 iclient2 lo_test iclient iserver_gpu
+do
+	break 
+done
+
+set -e
+
+PPP=58789
+PPP_GPU=58789
+PPP_GPU2=58790
+
+case $FFF in
+iserver_gpu2)
+
+	#cd cs_misc
+	#make
+	#cd -
+	make iserver_gpu2
+
+	./kill_server_gpu2
+	rm -f iserver_gpu2.out
+	#iserver -f -P $PPP -i iserver.out > q.server 2>&1 &
+	iserver_gpu2 -P $PPP_GPU2 -i iserver.out > q.server_gpu2 2>&1 &
+
+	echo "----------------------------------------------------------------"
+	ps -ef | grep iserver_gpu2
+	echo "----------------------------------------------------------------"
+
+	tail -f q.server_gpu2
+
+	;;
+iserver_gpu)
+
+	#cd cs_misc
+	#make
+	#cd -
+	make iserver_gpu
+
+	./kill_server_gpu
+	rm -f iserver_gpu.out
+	#iserver -f -P $PPP -i iserver.out > q.server 2>&1 &
+	iserver_gpu -P $PPP_GPU -i iserver.out > q.server_gpu 2>&1 &
+
+	echo "----------------------------------------------------------------"
+	ps -ef | grep iserver_gpu
+	echo "----------------------------------------------------------------"
+
+	#tail -f q.server_gpu
+
+	;;
+iclient2)
+
+	make iclient2
+	#serial_wht3 10 20 serial_wht q.out 10 >q 2>&1
+	cd /home/ldl/mr/baotou_cs/test_data
+
+	FFF=knife_testimage2_640x480
+
+	TIMENAME=`timename $FFF`.jpg
+
+	echo $TIMENAME
+
+	ll /home/ldl/mr/baotou_cs/test_data/$FFF.bgr
+
+	cd -
+
+	rm -f $FFF.out
+
+	TARGET_SIZE="-d 512 512 "
+
+	echo -n "NET INTERFACE ?"
+	read x
+	if [ "$x" == 'y' ]
+	then
+		echo -n "KANAS [y/n] ? ==> "
+		read x
+		if [ "$x" == 'y' ]
+		then
+			NET_OPTIONS="-P $PPP_GPU2 -h 135.112.178.81"
+		else
+			NET_OPTIONS="-P $PPP_GPU2 -h 127.0.0.1"	
+		fi
+
+		#iserver -P $PPP -i iserver.out &
+		#sleep 2
+	fi
+
+	set -x
+
+	iclient2 $NET_OPTIONS $TARGET_SIZE -t 640 480 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $TIMENAME
+	;;
+
+iclient)
+
+	make iclient
+	#serial_wht3 10 20 serial_wht q.out 10 >q 2>&1
+	cd /home/ldl/mr/baotou_cs/test_data
+	QQQQ=`ls *.bgr | cut -f 1 -d"."`
+	select FFF in GOLD_orig knife cup
+	do
+		break
+	done
+
+	#FFF=pic_640x480
+
+	#FFF=GOLD_orig
+
+	TIMENAME=`timename $FFF`.jpg
+
+	echo $TIMENAME
+
+	ll /home/ldl/mr/baotou_cs/test_data/$FFF.bgr
+
+	cd -
+
+	rm -f $FFF.out
+
+	#select TOSIZE in 512x512 256x256
+	#do
+		#break ;
+	#done
+
+	#case $TOSIZE in
+	#512x512)
+		TARGET_SIZE="-d 512 512 "
+		#;;
+	#256x256)
+		#TARGET_SIZE="-d 256 256 "
+		#;;
+	#esac
+
+	echo -n "NET INTERFACE ?"
+	read x
+	if [ "$x" == 'y' ]
+	then
+		echo -n "KANAS [y/n] ? ==> "
+		read x
+		if [ "$x" == 'y' ]
+		then
+			NET_OPTIONS="-P $PPP -h 135.112.178.81"
+		else
+			NET_OPTIONS="-P $PPP -h 127.0.0.1"	
+		fi
+
+		#iserver -P $PPP -i iserver.out &
+		#sleep 2
+	fi
+
+	#iclient -d 700 512 -t 640 480 -i /home/ldl/mr/baotou_cs/test_data/pic_640x480.bgr >q 2>&1
+
+	set -x
+
+	case $FFF in
+	knife)
+		iclient $NET_OPTIONS $TARGET_SIZE -t 512 480 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $TIMENAME
+		;;
+	cup)
+		iclient $NET_OPTIONS $TARGET_SIZE -t 512 480 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $TIMENAME
+		;;
+	GOLD_orig)
+		iclient $NET_OPTIONS $TARGET_SIZE -t 512 480 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $TIMENAME
+		;;
+	pic_640x480)
+		iclient $NET_OPTIONS $TARGET_SIZE -t 640 480 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out >q 2>&1
+		;;
+	wht_640x480_512x480)
+		iclient $NET_OPTIONS -d 700 512 -t 640 480 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out >q 2>&1
+		;;
+	wht_640x480)
+		iclient $NET_OPTIONS -d 640 480 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out >q 2>&1
+		;;
+	wht)
+		iclient $NET_OPTIONS -d 640 480 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out >q 2>&1
+		;;
+	wht_1280x720_1_1028x720)
+		iclient $NET_OPTIONS -d 1028 720 -t 1280 720 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out >q 2>&1
+		;;
+	wht_1280x720_1)
+		iclient $NET_OPTIONS -d 1280 720 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out >q 2>&1
+		;;
+	wht_1280x720)
+		iclient $NET_OPTIONS -d 1280 720 -i /home/ldl/mr/baotou_cs/test_data/$FFF.bgr -o $FFF.out >q 2>&1
+		;;
+	esac
+
+	#datab2a_2 -i $FFF.out > $FFF.matlab
+	#vi $FFF.matlab
+
+	#ll $FFF.out $FFF.matlab
+
+	#echo -n "vi q ==> "
+	#read x
+	#vi q
+	;;
+lo_test)
+	make lo_test
+	lo_test > q 2>&1
+	vi q
+	;;
+do_test)
+
+	cd ../camera_demo
+	make ibuf.o
+	make serial_wht3.o
+	cd -
+	make 
+
+	do_test > q.do_test 2>&1 &
+
+	#tail -f q.do_test
+
+	ll q.do_test
+	echo -n "vi ==> "
+	vi q.do_test
+
+	;;
+
+esac

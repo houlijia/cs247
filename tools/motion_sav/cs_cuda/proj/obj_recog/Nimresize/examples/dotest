@@ -1,0 +1,12 @@
+resize_test /home/ldl/mr/baotou_cs/test_data/knife_testimage2_640x480.bgr ./resize.out
+
+ll /home/ldl/mr/baotou_cs/test_data/knife_testimage2_640x480.bgr ./resize.out
+
+echo -n "to resize.out.a ==> ?"
+
+read x
+
+datab2a -c -i resize.out > resize.out.a
+
+ll resize.*
+

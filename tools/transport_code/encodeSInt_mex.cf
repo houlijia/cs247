@@ -1,0 +1,196 @@
+/**
+   \file 
+
+   MEX functions to perform quantization. 
+ */
+
+#include "mex.h"
+#ifdef __NVCC__
+#include "gpu/mxGPUArray.h"
+#endif
+
+#include "mex_tools.h"
+#include "mex_assert.h"
+#if HAS_GPU
+#include "CudaDevInfo.h"
+#include "mex_gpu_tools.h"
+#endif
+
+#include "CodeDest.h"
+#include "fast_heap.h"
+#include "mex_context.h"
+
+static char const * const errId = "encodeSInt_mex:InvalidInput";
+static char const * const errIdAlloc = "encodeSInt_mex:Allocation";
+static char const * const errIdMemcpy = "encodeSInt_mex:memcpy";
+
+/**
+   This MEX functions performs signed int encoding. 
+   Input:
+     prhs[0] - (vec) input data for encoding. May be either on CPU or GPU
+     pthd[[1] - (scalar, ootional) Offset to apply tsubtract from each entry (default= 0)
+   Output:
+     plhs[0] - (code) the coded data (uint_8, always on CPU).
+ */
+
+void mexFunction(int nlhs, mxArray *plhs[],
+                 int nrhs, mxArray const *prhs[])
+{
+  mxClassID class_id;
+  size_t n_vec;
+  const void *p_src_vec;
+  GenericHeapElement *pp_ends;
+  size_t *ends;	      //!< Array of indices of the end point + 1
+  size_t code_len;
+  unsigned char *p_code;
+  double ofst = 0;
+#if HAS_GPU
+  GenericHeapElement *pp_p_code;
+#endif
+  
+  mex_assert(((nrhs==1 || nrhs==2) && nlhs==1),
+	     (errId,"Expected 1 or 2 inputs exactly 1 input and 1 output"));
+  if(nrhs==2)
+    ofst = mxGetScalar(prhs[1]);
+
+#if HAS_GPU
+  bool on_gpu = mxIsGPUArray(prhs[0]);
+  const mxGPUArray *pg = NULL;
+#else
+  bool on_gpu = false;
+#endif
+  if(!on_gpu) {
+    mex_assert(!mxIsComplex(prhs[0]), (errId, "input cannot be complex"));
+	       
+    n_vec = (size_t) mxGetNumberOfElements(prhs[0]);
+    class_id = mxGetClassID(prhs[0]);
+
+    if(n_vec) {
+      p_src_vec = mxGetData(prhs[0]);
+      pp_ends = & fast_heap->get(n_vec * sizeof(*ends));
+      ends = static_cast<size_t*>(**pp_ends);
+    }
+    else {
+      plhs[0] = mxCreateNumericMatrix(1, 0, mxUINT8_CLASS, mxREAL);
+      return;
+    }
+  }
+#if HAS_GPU
+  else {
+    pg = mxGPUCreateFromMxArray(prhs[0]);
+    mex_assert((mxGPUGetComplexity(pg) == mxREAL), (errId, "input cannot be complex"));
+    n_vec = (size_t) mxGPUGetNumberOfElements(pg);
+    class_id = mxGPUGetClassID(pg);
+    if(n_vec) {
+      p_src_vec = mxGPUGetDataReadOnly(pg);
+      pp_ends = & d_fast_heap->get(n_vec * sizeof(*ends));
+      ends = static_cast<size_t*>(**pp_ends);
+    }
+    else {
+      mxGPUDestroyGPUArray(pg);
+      plhs[0] = mxCreateNumericMatrix(1, 0, mxUINT8_CLASS, mxREAL);
+      return;
+    }
+  }
+#endif
+
+  // Compute code_len
+  if(nrhs == 1) {
+    switch(class_id) {
+    case mxDOUBLE_CLASS:
+      CodeDest::endIndxSInt(n_vec, (double *)p_src_vec, on_gpu, ends); break;
+    case mxSINGLE_CLASS:
+      CodeDest::endIndxSInt(n_vec, (float *)p_src_vec, on_gpu, ends); break;
+    case mxINT8_CLASS:
+      CodeDest::endIndxSInt(n_vec, (int8_T *)p_src_vec, on_gpu, ends); break;
+    case mxINT16_CLASS:
+      CodeDest::endIndxSInt(n_vec, (int16_T *)p_src_vec, on_gpu, ends); break;
+    case mxINT32_CLASS:
+      CodeDest::endIndxSInt(n_vec, (int32_T *)p_src_vec, on_gpu, ends); break;
+    case mxINT64_CLASS:
+      CodeDest::endIndxSInt(n_vec, (int64_T *)p_src_vec, on_gpu, ends); break;
+    default:
+      mexErrMsgIdAndTxt(errId, "Unexpected class type: %d\n", class_id);
+    }
+  } else {
+    switch(class_id) {
+    case mxDOUBLE_CLASS:
+      CodeDest::endIndxSInt(n_vec, (double *)p_src_vec, on_gpu, ends, double(ofst)); break;
+    case mxSINGLE_CLASS:
+      CodeDest::endIndxSInt(n_vec, (float *)p_src_vec, on_gpu, ends, float(ofst)); break;
+    case mxINT8_CLASS:
+      CodeDest::endIndxSInt(n_vec, (int8_T *)p_src_vec, on_gpu, ends, int8_T(ofst)); break;
+    case mxINT16_CLASS:
+      CodeDest::endIndxSInt(n_vec, (int16_T *)p_src_vec, on_gpu, ends, int16_T(ofst)); break;
+    case mxINT32_CLASS:
+      CodeDest::endIndxSInt(n_vec, (int32_T *)p_src_vec, on_gpu, ends, int32_T(ofst)); break;
+    case mxINT64_CLASS:
+      CodeDest::endIndxSInt(n_vec, (int64_T *)p_src_vec, on_gpu, ends, int64_T(ofst)); break;
+    default:
+      mexErrMsgIdAndTxt(errId, "Unexpected class type: %d\n", class_id);
+    }
+  }
+
+  // Create output
+  code_len = CodeDest::codeLen(n_vec, ends, on_gpu);
+
+  plhs[0] = mxCreateNumericMatrix(1, code_len, mxUINT8_CLASS, mxREAL);
+  mex_assert((plhs[0] != NULL), (errIdAlloc, "Failed to allocate %lu uint8 for output",
+				 (unsigned long) code_len));
+
+  // Set p_code
+  if(!on_gpu) {
+    p_code = (unsigned char *) mxGetData(plhs[0]);
+  }
+#if HAS_GPU
+  else {
+    pp_p_code = & d_fast_heap->get(code_len*sizeof(*p_code));
+    p_code = static_cast<unsigned char*>(**pp_p_code);
+  }
+#endif
+
+  // Compute code
+  if(nrhs == 1) {
+    switch(class_id) {
+    case mxDOUBLE_CLASS:
+      CodeDest::encodeSInt(n_vec, (double *)p_src_vec, on_gpu, ends, p_code); break;
+    case mxSINGLE_CLASS:
+      CodeDest::encodeSInt(n_vec, (float *)p_src_vec, on_gpu, ends, p_code); break;
+    case mxINT8_CLASS:
+      CodeDest::encodeSInt(n_vec, (int8_T *)p_src_vec, on_gpu, ends, p_code); break;
+    case mxINT16_CLASS:
+      CodeDest::encodeSInt(n_vec, (int16_T *)p_src_vec, on_gpu, ends, p_code); break;
+    case mxINT32_CLASS:
+      CodeDest::encodeSInt(n_vec, (int32_T *)p_src_vec, on_gpu, ends, p_code); break;
+    case mxINT64_CLASS:
+      CodeDest::encodeSInt(n_vec, (int64_T *)p_src_vec, on_gpu, ends, p_code); break;
+    }
+  } else {
+    switch(class_id) {
+    case mxDOUBLE_CLASS:
+      CodeDest::encodeSInt(n_vec, (double *)p_src_vec, on_gpu, ends, p_code, double(ofst)); break;
+    case mxSINGLE_CLASS:
+      CodeDest::encodeSInt(n_vec, (float *)p_src_vec, on_gpu, ends, p_code, float(ofst)); break;
+    case mxINT8_CLASS:
+      CodeDest::encodeSInt(n_vec, (int8_T *)p_src_vec, on_gpu, ends, p_code, int8_T(ofst)); break;
+    case mxINT16_CLASS:
+      CodeDest::encodeSInt(n_vec, (int16_T *)p_src_vec, on_gpu, ends, p_code, int16_T(ofst)); break;
+    case mxINT32_CLASS:
+      CodeDest::encodeSInt(n_vec, (int32_T *)p_src_vec, on_gpu, ends, p_code, int32_T(ofst)); break;
+    case mxINT64_CLASS:
+      CodeDest::encodeSInt(n_vec, (int64_T *)p_src_vec, on_gpu, ends, p_code, int64_T(ofst)); break;
+    }
+  }
+
+  // Clean up and free memory
+#if HAS_GPU
+  if(on_gpu) {
+    gpuErrChk(cudaMemcpy(mxGetData(plhs[0]), p_code, code_len*sizeof(*p_code),
+			 cudaMemcpyDeviceToHost), errIdMemcpy, "");
+    pp_p_code->discard();
+    mxGPUDestroyGPUArray(pg);
+  }
+#endif
+
+  pp_ends->discard();
+}

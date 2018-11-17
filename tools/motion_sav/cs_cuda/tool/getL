@@ -1,0 +1,4 @@
+echo "y[j] == y[L[j]] ... after measurement"
+echo "ex: getL WH_lfsr_20_indcs.dat.L"
+echo "------------------------------------------"
+cat $1 | awk '{ print $1 " << [ " $4 " ]" }'

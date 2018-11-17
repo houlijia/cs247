@@ -1,0 +1,14 @@
+gpustarttimestamp
+gpuendtimestamp
+timestamp
+threadblocksize
+dynsmemperblock
+stasmemperblock
+reqperthread
+memtransferdir
+memtransfersize
+memtransferhostmemtype
+streamid
+localblocksize
+cacheconfigrequested
+cacheconfigexecuted

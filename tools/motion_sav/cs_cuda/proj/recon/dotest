@@ -1,0 +1,40 @@
+set -o
+#set -x
+
+select TARG in recon
+do
+	break
+done
+
+cd cs_misc
+make
+cd -
+make $TARG
+
+echo "-------------------------------------------------------------------------------------"
+#acq_ana_ipcam_80x60
+select FFF in *.json
+do
+	break 
+done
+
+LOG=1
+echo -n "LOG? [1] ==> "
+read LOG
+
+if [ "$LOG" == "" ]
+then
+	LOG=1 
+fi
+
+echo LOG ... \"$LOG\"
+
+FFF=`echo $FFF | cut -f1 -d'.'`
+
+echo $FFF ....................
+
+case $FFF in
+*)
+	recon /home/ldl/tmp/20150105_1553_T3/1.case/all_cif_300.csvid > q.out 2>&1
+	;;
+esac

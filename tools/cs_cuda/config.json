@@ -1,0 +1,89 @@
+{
+	// -a : adjustment add 0 to x/y
+	"adj_x" : 8,
+	"adj_y" : 8,
+
+	// -f : debug flag :
+	// "dbg_flag" :
+
+	// -p : do :ermutation 
+	"do_permutation" : 1,
+	"permdir" : "../lfsr",
+
+	// -I : ip cam string
+	"ipcam_string" : "http://PTSdisplay:ALUsurv@135.112.150.72:58006/axis-cgi/mjpg/video.cgi?resolution=640x480&req_fps=30&.mjpg", 
+
+	// -i : input data file
+	// "finname" : null ;
+
+	// -z : comp_ratio
+	"comp_ratio" : 10,
+
+	// -m : motion detection
+	"md_x" : 12,
+	"md_y" : 12,
+	"md_z" : 4,
+
+	// -c : cube
+	"cubex" : 8,
+	"cubey" : 8,
+	"cubez" : 4,
+
+	// -e : frame expansion
+	"xadd" : 80,
+	"yadd" : 60,
+	"zadd" : 5,
+
+	// -g : edge
+	"edge_x" : 2,
+	"edge_y" : 2,
+
+	// -T : display threshold 
+	// "disp_th_x" :
+	// "disp_th_y" :
+
+	// -d : frame size
+	"frame_x" : 640,
+	"frame_y" : 480,
+
+	// -n : do not seek
+	"do_not_seek" : 1,
+
+	// -F : md output file
+	"md_outputfile" : "q.csv",
+
+	// -o : output file name
+	"foutname" : "q" ,
+
+	// -q
+	// "do_one" :
+	// -s
+	// "do_swap" :
+
+	// -y
+	"y_only" : 1, 
+
+	// -O : overlap
+	"overlap_x" : 80,
+	"overlap_y" : 60,
+	"overlap_z" : 0,
+
+	// -w : weight scheme
+	"weight_scheme" : 3,
+
+	// -b : block size
+	"x_block" : 160,
+	"y_block" : 120,
+	"z_block" : 8,
+
+	// do reconstruction
+
+	"reconstruction" : 0
+
+	// global -- not configurable ... derived
+
+	// int do_analysis ;
+	// int do_block    ;
+	// int do_comp_ratio ;
+	// int do_interpolate ;
+}

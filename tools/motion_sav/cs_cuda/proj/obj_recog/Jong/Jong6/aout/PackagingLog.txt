@@ -1,0 +1,24 @@
+ant:
+<ant>
+  <mkdir dir="/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong6/aout/for_redistribution" />
+  <mkdir dir="/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong6/aout/for_testing" />
+  <mkdir dir="/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong6/aout/for_redistribution_files_only" />
+</ant>
+mcc -o aout -W main:aout -T link:exe -d /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong6/aout/for_testing -v /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong6/FindMultiBestfromDB.m 
+Compiler version: 6.0 (R2015a)
+Dependency analysis by REQUIREMENTS.
+[Warning: Adding path
+"/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong6"
+to Compiler path instance.] 
+Parsing file "/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong6/FindMultiBestfromDB.m"
+	(Referenced from: "Compiler Command Line").
+Deleting 2 temporary MEX authorization files.
+Removing: '/tmp/0168dX8GbIz_5773.auth'.
+Removing: '/tmp/0168dIBZXvV_5773.auth'.
+Generating file "/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong6/aout/for_testing/readme.txt".
+Generating file "/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong6/aout/for_testing/run_aout.sh".
+Packaging...
+Creating the bundle...
+Self contained installer created at /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong6/aout/for_redistribution/MyAppInstaller_mcr.install.
+Packaging complete.
+Elapsed packaging time was: 1 minutes and 54 seconds.

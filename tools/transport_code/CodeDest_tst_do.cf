@@ -1,0 +1,93 @@
+/** \file
+
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "CodeDest_tst_do.h"
+
+#ifdef __NVCC__
+#define DEFAULT_USE_GPU true
+#else
+#define DEFAULT_USE_GPU false
+#endif
+
+bool default_use_gpu = DEFAULT_USE_GPU;
+
+void help(const char *prog_name)
+{
+  printf("\nCompute signed and unsigned integer coding\n"
+	 "\nUSAGE:\n"
+	 "%s val0 [ n_vals mlt [add]]\n", prog_name);
+  printf("Where:\n"
+	 "  val0 (floating point number) is the initial value\n"
+	 "  n_vals (positive integer) is the numbeer of values [1]\n"
+	 "  mlt (floating point number) is the multiplier [1]\n"
+         "  add (floating point numbe) is the step size [0]\n"
+	 "The program computes encoding v[0],...,v[n_vals-1], where\n"
+	 "     v[0]=val0, v[k+1] = v[k] * mlt + add\n"
+#ifdef __NVCC__
+	 "It is done both for signed and unsigned (using absolute value).\n"
+#else
+	 "It is done both for signed and unsigned (using absolute value)\n"
+	 "and with CPU and GPU\n"
+#endif
+	 );
+}
+
+
+double * parse_args(int argc,
+		    char *argv[],
+		    size_t &n_vals
+		    )
+{
+  double add = 0, mlt=1;
+  double *vals, val0;
+  unsigned long nv = 1, k;
+
+  switch(argc) {
+  case 5:
+    if(sscanf(argv[4], "%lg", &add) != 1)
+      return NULL;
+  case 4:
+    if(sscanf(argv[2], "%lu", &nv) != 1 || !nv || sscanf(argv[3], "%lg", &mlt) != 1)
+      return NULL;
+  case 2:
+    if(sscanf(argv[1], "%lg", &val0) != 1)
+      return 0;
+    break;
+  case 1:
+    help(argv[0]);
+    exit(EXIT_SUCCESS);
+  default:
+    return NULL;
+  }
+
+  vals = new double[nv];
+  if(vals == NULL) {
+    fprintf(stderr, "Failed allocating input array of %lu doubles\n", nv);
+    exit(EXIT_FAILURE);
+  }
+  n_vals = size_t(nv);
+    
+  vals[0] = val0;
+  for(k=1; k<nv; k++)
+    vals[k] = vals[k-1]*mlt + add;
+
+  return vals;
+}
+
+void run_tests(size_t n_vals, const double *input)
+{
+  printf("Input:\n");
+  print_vec(n_vals, input, 5, " %11.6G");
+
+  run_tests_gpu(n_vals, input);
+
+  CodeDest_tst_rslt cpu_rslt(n_vals, input, false);
+  cpu_rslt.print();
+}
+
+
+

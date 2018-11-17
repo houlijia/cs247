@@ -1,0 +1,69 @@
+Tue Mar  3 10:36:17 EST 2015
+cs_helper_test
+---------------------------------------------------
+dbg_p_d_data_i: h_cast_T_to_T : char  size 40 dp 0x1300200200
+dbg_pdata_i: h_cast_T_to_T : char 
+0 -- 0000007b 123
+1 -- 0000007c 124
+2 -- 0000007d 125
+3 -- 0000007e 126
+4 -- 0000007f 127
+5 -- ffffff80 -128
+6 -- ffffff81 -127
+7 -- ffffff82 -126
+8 -- ffffff83 -125
+9 -- ffffff84 -124
+dbg_p_d_data_i: h_cast_T_to_T : unsigned char  size 40 dp 0x1300200200
+dbg_pdata_i: h_cast_T_to_T : unsigned char 
+0 -- 0000007b 123
+1 -- 0000007c 124
+2 -- 0000007d 125
+3 -- 0000007e 126
+4 -- 0000007f 127
+5 -- 00000080 128
+6 -- 00000081 129
+7 -- 00000082 130
+8 -- 00000083 131
+9 -- 00000084 132
+dbg_p_d_data_f: h_cast_T_to_T : to float size 40 dp 0x1300200200
+dbg_pdata_f: h_cast_T_to_T : to float
+0 -- 123.000000
+1 -- 124.000000
+2 -- 125.000000
+3 -- 126.000000
+4 -- 127.000000
+5 -- 128.000000
+6 -- 129.000000
+7 -- 130.000000
+8 -- 131.000000
+9 -- 132.000000
+diff buf -- 0 : 0.000000 
+diff buf -- 1 : 1.000000 
+diff buf -- 2 : 2.000000 
+diff buf -- 3 : 3.000000 
+diff buf -- 4 : 4.000000 
+diff buf -- 5 : 5.000000 
+diff buf -- 6 : 6.000000 
+diff buf -- 7 : 7.000000 
+diff buf -- 8 : 8.000000 
+diff buf -- 9 : 9.000000 
+same buf -- 0 : 0.000000 
+same buf -- 1 : 0.000000 
+same buf -- 2 : 0.000000 
+same buf -- 3 : 0.000000 
+same buf -- 4 : 0.000000 
+same buf -- 5 : 0.000000 
+same buf -- 6 : 0.000000 
+same buf -- 7 : 0.000000 
+same buf -- 8 : 0.000000 
+same buf -- 9 : 0.000000 
+same buf -- 0 : 4.000000 
+same buf -- 1 : 5.000000 
+same buf -- 2 : 6.000000 
+same buf -- 3 : 7.000000 
+same buf -- 4 : 8.000000 
+same buf -- 5 : 9.000000 
+same buf -- 6 : 10.000000 
+same buf -- 7 : 11.000000 
+same buf -- 8 : 12.000000 
+same buf -- 9 : 13.000000 

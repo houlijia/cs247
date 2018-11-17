@@ -1,0 +1,20 @@
+make
+
+select FFF in acq_ana_webcam acq_ana_ipcam
+do
+	break 
+done
+
+echo $FFF ....................
+
+case $FFF in
+acq_ana_ipcam|acq_ana_webcam)
+	./yuvb420pcs -f $FFF.json > $FFF.out 2>&1
+	;;
+recon.json)
+	./yuvb420pcs -f recon.json
+	;;
+config.json)
+	./yuvb420pcs -f config.json
+	;;
+esac

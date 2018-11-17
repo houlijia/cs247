@@ -1,0 +1,28 @@
+ant:
+<ant>
+  <mkdir dir="/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/aout/for_redistribution" />
+  <mkdir dir="/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/aout/for_testing" />
+  <mkdir dir="/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/aout/for_redistribution_files_only" />
+</ant>
+mcc -o aout -W main:aout -T link:exe -d /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/aout/for_testing -v /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/FindMultiBestfromDB.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/BGR2I.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/CMRecursion.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/CMTriplet.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/CSSURFDescriptor.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/CSSURFDetector.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/CSSURFMatch.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/FindBestfromDB.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/FindExtreme.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/GraphObj.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/InterpPlane.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/LocalizedOrderedSensing.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/MatchtoDB.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/OtvIntp.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/SaveCorrespondence.m -a /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/UpProp.m 
+Compiler version: 6.0 (R2015a)
+Dependency analysis by REQUIREMENTS.
+[Warning: Adding path
+"/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5"
+to Compiler path instance.] 
+Parsing file "/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/FindMultiBestfromDB.m"
+	(Referenced from: "Compiler Command Line").
+Deleting 6 temporary MEX authorization files.
+Removing: '/tmp/0785ag8Yme0_30810.auth'.
+Removing: '/tmp/0785ahtkz3z_30810.auth'.
+Removing: '/tmp/0785aWqPNS9_30810.auth'.
+Removing: '/tmp/0785ah3G3HJ_30810.auth'.
+Removing: '/tmp/0785aZWAlxj_30810.auth'.
+Removing: '/tmp/0785aIgwYmT_30810.auth'.
+Generating file "/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/aout/for_testing/readme.txt".
+Generating file "/mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/aout/for_testing/run_aout.sh".
+Packaging...
+Creating the bundle...
+Self contained installer created at /mnt/misc/woof/ldl/mr/baotou_cs/baotou_cs_102315_1437/cs_cuda/proj/obj_recog/Jong5/aout/for_redistribution/MyAppInstaller_mcr.install.
+Packaging complete.
+Elapsed packaging time was: 1 minutes and 43 seconds.

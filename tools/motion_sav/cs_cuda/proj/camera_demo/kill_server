@@ -1,0 +1,6 @@
+ps -ef | grep iserver
+SPID=`ps -ef | grep "iserver -P " | grep 58787 | awk '{ print $2}'`
+echo ------------------------------------------------------------------
+kill -9 $SPID
+echo ------------------------------------------------------------------
+ps -ef | grep iserver

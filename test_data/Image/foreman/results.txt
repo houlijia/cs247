@@ -1,0 +1,99 @@
+Encoding Options:
+1:
+      msrmnt_input_ratio:0.02
+      qntzr_wdth_rng_exp:6
+      qntzr_wdth_mltplr:3
+      qntzr_wdth_mode:2
+      msrmnt_mtrx:struct<
+        type:'MD_DCT'
+        nxt:[] >
+2:
+      msrmnt_input_ratio:0.03
+      qntzr_wdth_rng_exp:6
+      qntzr_wdth_mltplr:3
+      qntzr_wdth_mode:2
+      msrmnt_mtrx:struct<
+        type:'MD_DCT'
+        nxt:[] >
+3:
+      msrmnt_input_ratio:0.04
+      qntzr_wdth_rng_exp:6
+      qntzr_wdth_mltplr:3
+      qntzr_wdth_mode:2
+      msrmnt_mtrx:struct<
+        type:'MD_DCT'
+        nxt:[] >
+4:
+      msrmnt_input_ratio:0.05
+      qntzr_wdth_rng_exp:6
+      qntzr_wdth_mltplr:3
+      qntzr_wdth_mode:2
+      msrmnt_mtrx:struct<
+        type:'MD_DCT'
+        nxt:[] >
+5:
+      msrmnt_input_ratio:0.06
+      qntzr_wdth_rng_exp:6
+      qntzr_wdth_mltplr:3
+      qntzr_wdth_mode:2
+      msrmnt_mtrx:struct<
+        type:'MD_DCT'
+        nxt:[] >
+6:
+      msrmnt_input_ratio:0.08
+      qntzr_wdth_rng_exp:6
+      qntzr_wdth_mltplr:3
+      qntzr_wdth_mode:2
+      msrmnt_mtrx:struct<
+        type:'MD_DCT'
+        nxt:[] >
+7:
+      msrmnt_input_ratio:0.1
+      qntzr_wdth_rng_exp:6
+      qntzr_wdth_mltplr:3
+      qntzr_wdth_mode:2
+      msrmnt_mtrx:struct<
+        type:'MD_DCT'
+        nxt:[] >
+8:
+      msrmnt_input_ratio:0.15
+      qntzr_wdth_rng_exp:6
+      qntzr_wdth_mltplr:3
+      qntzr_wdth_mode:2
+      msrmnt_mtrx:struct<
+        type:'MD_DCT'
+        nxt:[] >
+9:
+      msrmnt_input_ratio:0.2
+      qntzr_wdth_rng_exp:6
+      qntzr_wdth_mltplr:3
+      qntzr_wdth_mode:2
+      msrmnt_mtrx:struct<
+        type:'MD_DCT'
+        nxt:[] >
+10:
+      msrmnt_input_ratio:0.25
+      qntzr_wdth_rng_exp:6
+      qntzr_wdth_mltplr:3
+      qntzr_wdth_mode:2
+      msrmnt_mtrx:struct<
+        type:'MD_DCT'
+        nxt:[] >
+Decoding Options:
+:
+      alg:'GAP_TV'
++-------------------+---------------+------+------+------+-----+-----+-----+-----+--------+------+------+-------+
+|    Image name     |     Opts      | file | Msrs | Hist | N   |SSIM |PSNR | CS  |Nrm.Qntz|bits/ |MsrSNR|% Sat. |
+|                   |     index     | size | size | size | Msrs|     |     |ratio|Interval|UsdMsr|  dB  | msrs  |
++-------------------+---------------+------+------+------+-----+-----+-----+-----+--------+------+------+-------+
+|            foreman|              1|   448|   356|    41| 1311|0.727| 26.9|0.020|   0.5859|   2.8|28.030|  0.915|
+|            foreman|              2|   669|   571|    46| 1966|0.767| 28.2|0.030|   0.3906|   2.8|29.984|  1.068|
+|            foreman|              3|   868|   758|    58| 2621|0.790| 28.7|0.040|    0.293|   2.7|31.240|  0.878|
+|            foreman|              4|  1052|   940|    61| 3277|0.807| 29.0|0.050|   0.2344|   2.6|32.343|  0.793|
+|            foreman|              5|  1242|  1127|    63| 3932|0.822| 29.0|0.060|   0.1953|   2.5|33.149|  0.763|
+|            foreman|              6|  1637|  1484|   101| 5243|0.846| 29.2|0.080|   0.1465|   2.5|34.444|  0.668|
+|            foreman|              7|  2091|  1962|    78| 6554|0.866| 29.3|0.100|   0.1172|   2.6|35.452|  0.580|
+|            foreman|              8|  3254|  3082|   120| 9830|0.903| 29.0|0.150|  0.07813|   2.7|37.350|  0.570|
+|            foreman|              9|  4408|  4221|   135|13107|0.926| 28.5|0.200|  0.05859|   2.7|38.590|  0.511|
+|            foreman|             10|  5536|  5346|   145|16384|0.939| 28.1|0.250|  0.04687|   2.7|39.629|  0.470|
++-------------------+---------------+------+------+------+-----+-----+-----+-----+--------+------+------+-------+\n

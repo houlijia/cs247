@@ -1,0 +1,4 @@
+echo u[R[j]] = u[j] ... before measurement
+echo "ex: getR WH_lfsr_20_indcs.dat.R"
+echo "---------------------------------------------"
+cat $1 | awk '{ print $4 " << [ " $1 " ]"}' | sort -n

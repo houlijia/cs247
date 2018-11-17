@@ -1,0 +1,194 @@
+cs_buffer_init: i 0 total 2000 size 1000 cnt 2 total cnt 2
+cs_buffer_init: i 1 total 8000 size 2000 cnt 3 total cnt 5
+cs_buffer_init: i 2 total 20000 size 3000 cnt 4 total cnt 9
+icnt 9
+cs_put_free_buf: bp 20215280 cnt 1 
+cs_put_free_buf: bp 20215296 cnt 2 
+cs_put_free_buf: bp 20215312 cnt 3 
+cs_put_free_buf: bp 20215328 cnt 4 
+cs_put_free_buf: bp 20215344 cnt 5 
+cs_put_free_buf: bp 20215360 cnt 6 
+cs_put_free_buf: bp 20215376 cnt 7 
+cs_put_free_buf: bp 20215392 cnt 8 
+cs_put_free_buf: bp 20215408 cnt 9 
+cs_put_free_list: bp 0x1300200000 idx 0 
+cs_get_free_buf: bp 20215408 cnt 8 
+cs_put_free_list: bp 0x1347670 d_p 0x1300200000 idx 0 cnt 1
+cs_put_free_list: bp 0x13002003e8 idx 0 
+cs_get_free_buf: bp 20215392 cnt 7 
+cs_put_free_list: bp 0x1347660 d_p 0x13002003e8 idx 0 cnt 2
+cs_put_free_list: bp 0x13002007d0 idx 1 
+cs_get_free_buf: bp 20215376 cnt 6 
+cs_put_free_list: bp 0x1347650 d_p 0x13002007d0 idx 1 cnt 1
+cs_put_free_list: bp 0x1300200fa0 idx 1 
+cs_get_free_buf: bp 20215360 cnt 5 
+cs_put_free_list: bp 0x1347640 d_p 0x1300200fa0 idx 1 cnt 2
+cs_put_free_list: bp 0x1300201770 idx 1 
+cs_get_free_buf: bp 20215344 cnt 4 
+cs_put_free_list: bp 0x1347630 d_p 0x1300201770 idx 1 cnt 3
+cs_put_free_list: bp 0x1300201f40 idx 2 
+cs_get_free_buf: bp 20215328 cnt 3 
+cs_put_free_list: bp 0x1347620 d_p 0x1300201f40 idx 2 cnt 1
+cs_put_free_list: bp 0x1300202af8 idx 2 
+cs_get_free_buf: bp 20215312 cnt 2 
+cs_put_free_list: bp 0x1347610 d_p 0x1300202af8 idx 2 cnt 2
+cs_put_free_list: bp 0x13002036b0 idx 2 
+cs_get_free_buf: bp 20215296 cnt 1 
+cs_put_free_list: bp 0x1347600 d_p 0x13002036b0 idx 2 cnt 3
+cs_put_free_list: bp 0x1300204268 idx 2 
+cs_get_free_buf: bp 20215280 cnt 0 
+cs_put_free_list: bp 0x13475f0 d_p 0x1300204268 idx 2 cnt 4
+--------------------------------------------------------------- B
+p_buf_free: init cnt 0 
+p_buf_list: init cs_buf_cnt 3
+i 0 k 0 cb 0x1347660 d_A 0x13002003e8 np 0x1347670 
+i 0 k 1 cb 0x1347670 d_A 0x1300200000 np (nil) 
+i 1 k 0 cb 0x1347630 d_A 0x1300201770 np 0x1347640 
+i 1 k 1 cb 0x1347640 d_A 0x1300200fa0 np 0x1347650 
+i 1 k 2 cb 0x1347650 d_A 0x13002007d0 np (nil) 
+i 2 k 0 cb 0x13475f0 d_A 0x1300204268 np 0x1347600 
+i 2 k 1 cb 0x1347600 d_A 0x13002036b0 np 0x1347610 
+i 2 k 2 cb 0x1347610 d_A 0x1300202af8 np 0x1347620 
+i 2 k 3 cb 0x1347620 d_A 0x1300201f40 np (nil) 
+--------------------------------------------------------------- E
+--------------------------------------------------------------- B
+p_buf_free: after init cnt 0 
+p_buf_list: after init cs_buf_cnt 3
+i 0 k 0 cb 0x1347660 d_A 0x13002003e8 np 0x1347670 
+i 0 k 1 cb 0x1347670 d_A 0x1300200000 np (nil) 
+i 1 k 0 cb 0x1347630 d_A 0x1300201770 np 0x1347640 
+i 1 k 1 cb 0x1347640 d_A 0x1300200fa0 np 0x1347650 
+i 1 k 2 cb 0x1347650 d_A 0x13002007d0 np (nil) 
+i 2 k 0 cb 0x13475f0 d_A 0x1300204268 np 0x1347600 
+i 2 k 1 cb 0x1347600 d_A 0x13002036b0 np 0x1347610 
+i 2 k 2 cb 0x1347610 d_A 0x1300202af8 np 0x1347620 
+i 2 k 3 cb 0x1347620 d_A 0x1300201f40 np (nil) 
+--------------------------------------------------------------- E
+get 2 from 0 -----------------------------------------------------
+cs_get_free_list: idx 0 
+cs_put_free_buf: bp 20215392 cnt 1 
+cs_get_free_list: idx 0 bp 0x13002003e8 cnt 1
+cs_get_free_list: idx 0 
+cs_put_free_buf: bp 20215408 cnt 2 
+cs_get_free_list: idx 0 bp 0x1300200000 cnt 0
+get 2 from 0: p1 0x13002003e8 p2 0x1300200000 
+--------------------------------------------------------------- B
+p_buf_free: get 2 from 0 cnt 2 
+1 :: 0x1347670 
+2 :: 0x1347660 
+p_buf_list: get 2 from 0 cs_buf_cnt 3
+i 1 k 0 cb 0x1347630 d_A 0x1300201770 np 0x1347640 
+i 1 k 1 cb 0x1347640 d_A 0x1300200fa0 np 0x1347650 
+i 1 k 2 cb 0x1347650 d_A 0x13002007d0 np (nil) 
+i 2 k 0 cb 0x13475f0 d_A 0x1300204268 np 0x1347600 
+i 2 k 1 cb 0x1347600 d_A 0x13002036b0 np 0x1347610 
+i 2 k 2 cb 0x1347610 d_A 0x1300202af8 np 0x1347620 
+i 2 k 3 cb 0x1347620 d_A 0x1300201f40 np (nil) 
+--------------------------------------------------------------- E
+cs_put_free_list: bp 0x1300200000 idx 0 
+cs_get_free_buf: bp 20215408 cnt 1 
+cs_put_free_list: bp 0x1347670 d_p 0x1300200000 idx 0 cnt 1
+cs_put_free_list: bp 0x13002003e8 idx 0 
+cs_get_free_buf: bp 20215392 cnt 0 
+cs_put_free_list: bp 0x1347660 d_p 0x13002003e8 idx 0 cnt 2
+--------------------------------------------------------------- B
+p_buf_free: put 2 from 0 cnt 0 
+p_buf_list: put 2 from 0 cs_buf_cnt 3
+i 0 k 0 cb 0x1347660 d_A 0x13002003e8 np 0x1347670 
+i 0 k 1 cb 0x1347670 d_A 0x1300200000 np (nil) 
+i 1 k 0 cb 0x1347630 d_A 0x1300201770 np 0x1347640 
+i 1 k 1 cb 0x1347640 d_A 0x1300200fa0 np 0x1347650 
+i 1 k 2 cb 0x1347650 d_A 0x13002007d0 np (nil) 
+i 2 k 0 cb 0x13475f0 d_A 0x1300204268 np 0x1347600 
+i 2 k 1 cb 0x1347600 d_A 0x13002036b0 np 0x1347610 
+i 2 k 2 cb 0x1347610 d_A 0x1300202af8 np 0x1347620 
+i 2 k 3 cb 0x1347620 d_A 0x1300201f40 np (nil) 
+--------------------------------------------------------------- E
+get from 1/2 -----------------------------------------------------
+cs_get_free_list: idx 1 
+cs_put_free_buf: bp 20215344 cnt 1 
+cs_get_free_list: idx 1 bp 0x1300201770 cnt 2
+cs_get_free_list: idx 2 
+cs_put_free_buf: bp 20215280 cnt 2 
+cs_get_free_list: idx 2 bp 0x1300204268 cnt 3
+get from 1/2: p1 0x1300201770 p2 0x1300204268 
+--------------------------------------------------------------- B
+p_buf_free: get from 1/2 cnt 2 
+1 :: 0x13475f0 
+2 :: 0x1347630 
+p_buf_list: get from 1/2 cs_buf_cnt 3
+i 0 k 0 cb 0x1347660 d_A 0x13002003e8 np 0x1347670 
+i 0 k 1 cb 0x1347670 d_A 0x1300200000 np (nil) 
+i 1 k 0 cb 0x1347640 d_A 0x1300200fa0 np 0x1347650 
+i 1 k 1 cb 0x1347650 d_A 0x13002007d0 np (nil) 
+i 2 k 0 cb 0x1347600 d_A 0x13002036b0 np 0x1347610 
+i 2 k 1 cb 0x1347610 d_A 0x1300202af8 np 0x1347620 
+i 2 k 2 cb 0x1347620 d_A 0x1300201f40 np (nil) 
+--------------------------------------------------------------- E
+cs_put_free_list: bp 0x1300201770 idx 1 
+cs_get_free_buf: bp 20215280 cnt 1 
+cs_put_free_list: bp 0x13475f0 d_p 0x1300201770 idx 1 cnt 3
+cs_put_free_list: bp 0x1300204268 idx 2 
+cs_get_free_buf: bp 20215344 cnt 0 
+cs_put_free_list: bp 0x1347630 d_p 0x1300204268 idx 2 cnt 4
+--------------------------------------------------------------- B
+p_buf_free: put to 1/2 cnt 0 
+p_buf_list: put to 1/2 cs_buf_cnt 3
+i 0 k 0 cb 0x1347660 d_A 0x13002003e8 np 0x1347670 
+i 0 k 1 cb 0x1347670 d_A 0x1300200000 np (nil) 
+i 1 k 0 cb 0x13475f0 d_A 0x1300201770 np 0x1347640 
+i 1 k 1 cb 0x1347640 d_A 0x1300200fa0 np 0x1347650 
+i 1 k 2 cb 0x1347650 d_A 0x13002007d0 np (nil) 
+i 2 k 0 cb 0x1347630 d_A 0x1300204268 np 0x1347600 
+i 2 k 1 cb 0x1347600 d_A 0x13002036b0 np 0x1347610 
+i 2 k 2 cb 0x1347610 d_A 0x1300202af8 np 0x1347620 
+i 2 k 3 cb 0x1347620 d_A 0x1300201f40 np (nil) 
+--------------------------------------------------------------- E
+get 4 from 1 -----------------------------------------------------
+cs_get_free_list: idx 1 
+cs_put_free_buf: bp 20215280 cnt 1 
+cs_get_free_list: idx 1 bp 0x1300201770 cnt 2
+cs_get_free_list: idx 1 
+cs_put_free_buf: bp 20215360 cnt 2 
+cs_get_free_list: idx 1 bp 0x1300200fa0 cnt 1
+cs_get_free_list: idx 1 
+cs_put_free_buf: bp 20215376 cnt 3 
+cs_get_free_list: idx 1 bp 0x13002007d0 cnt 0
+cs_get_free_list: idx 1 
+cs_get_free_list: idx 1 bp (nil) cnt 0
+get 4 from 1: p1 0x1300201770 p2 0x1300200fa0 p3 0x13002007d0 p4 (nil) 
+--------------------------------------------------------------- B
+p_buf_free: get from 1/2 cnt 3 
+1 :: 0x1347650 
+2 :: 0x1347640 
+3 :: 0x13475f0 
+p_buf_list: get from 1/2 cs_buf_cnt 3
+i 0 k 0 cb 0x1347660 d_A 0x13002003e8 np 0x1347670 
+i 0 k 1 cb 0x1347670 d_A 0x1300200000 np (nil) 
+i 2 k 0 cb 0x1347630 d_A 0x1300204268 np 0x1347600 
+i 2 k 1 cb 0x1347600 d_A 0x13002036b0 np 0x1347610 
+i 2 k 2 cb 0x1347610 d_A 0x1300202af8 np 0x1347620 
+i 2 k 3 cb 0x1347620 d_A 0x1300201f40 np (nil) 
+--------------------------------------------------------------- E
+cs_put_free_list: bp 0x1300200fa0 idx 1 
+cs_get_free_buf: bp 20215376 cnt 2 
+cs_put_free_list: bp 0x1347650 d_p 0x1300200fa0 idx 1 cnt 1
+cs_put_free_list: bp 0x13002007d0 idx 1 
+cs_get_free_buf: bp 20215360 cnt 1 
+cs_put_free_list: bp 0x1347640 d_p 0x13002007d0 idx 1 cnt 2
+cs_put_free_list: bp 0x1300201770 idx 1 
+cs_get_free_buf: bp 20215280 cnt 0 
+cs_put_free_list: bp 0x13475f0 d_p 0x1300201770 idx 1 cnt 3
+--------------------------------------------------------------- B
+p_buf_free: put 4 to 1 cnt 0 
+p_buf_list: put 4 to 1 cs_buf_cnt 3
+i 0 k 0 cb 0x1347660 d_A 0x13002003e8 np 0x1347670 
+i 0 k 1 cb 0x1347670 d_A 0x1300200000 np (nil) 
+i 1 k 0 cb 0x13475f0 d_A 0x1300201770 np 0x1347640 
+i 1 k 1 cb 0x1347640 d_A 0x13002007d0 np 0x1347650 
+i 1 k 2 cb 0x1347650 d_A 0x1300200fa0 np (nil) 
+i 2 k 0 cb 0x1347630 d_A 0x1300204268 np 0x1347600 
+i 2 k 1 cb 0x1347600 d_A 0x13002036b0 np 0x1347610 
+i 2 k 2 cb 0x1347610 d_A 0x1300202af8 np 0x1347620 
+i 2 k 3 cb 0x1347620 d_A 0x1300201f40 np (nil) 
+--------------------------------------------------------------- E

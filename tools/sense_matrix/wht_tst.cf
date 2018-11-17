@@ -1,0 +1,261 @@
+/** \file
+Test wht.h
+*/
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+#include "fast_heap.h"
+#include "wht.h"
+
+template<class T>
+static void print_mat(const char *name,
+		      const  T* mtx,
+		      size_t nr,
+		      size_t nc,
+		      const char *fmt,	//*< printf format for type T
+		      unsigned fmt_len	//*< Length of the format
+		      )
+{
+  printf("%s\n", name);
+  size_t n_entrs = 70/(fmt_len+1);
+  
+  for(size_t i=0; i<nr; i++) {
+    printf("%5lu:", (unsigned long)i);
+    for(size_t j=0; j<nc; j++) {
+      printf("%s ", (j && !(j%n_entrs))? "\n      ":"");
+      printf(fmt, mtx[j*nr + i]);
+    }
+    printf("\n");
+  }
+}
+
+template<class T>
+static T cmp_vec_err(const T*x, const T*y, size_t sz)
+{
+  T err = 0;
+  for(size_t i=0; i<sz; i++) {
+    T df = x[i] - y[i];
+    if(df < 0)
+      df = -df;
+    if(df > err)
+      err = df;
+  }
+  return err;
+}
+
+template<class T>
+static void run_tst(size_t log2ordr,	//*< transform is of order 2<<log2ordr
+		    size_t nc,		//*< number of columns
+		    int verbose,	//*< verbosity level (0,1,2)
+		    const char *fmt,	//*< printf format for type T
+		    unsigned fmt_len	//*< Length of the format
+		    )
+{
+  const size_t nr = 1 << log2ordr;
+  const size_t sz = nr*nc;
+  size_t i,j;
+  T val, err;
+
+  GenericHeapElement &p_wh = fast_heap->get(nr*nr*sizeof(T));
+  T *wh = static_cast<T*>(*p_wh);
+  GenericHeapElement &p_iwh = fast_heap->get(nr*nr*sizeof(T));
+  T *iwh = static_cast<T*>(*p_iwh);
+
+  for(i=0; i<nr; i++)
+    for(j=0; j<nr; j++)
+      wh[i*nr+j] = T((i==j)? 1: 0);
+  memcpy(iwh, wh, nr*nr*sizeof(T));
+
+#ifdef __NVCC__
+  GenericHeapElement &p_d_wh = d_fast_heap->get(nr*nr*sizeof(T));
+  T *d_wh = static_cast<T*>(*p_d_wh);
+  GenericHeapElement &p_d_iwh = d_fast_heap->get(nr*nr*sizeof(T));
+  T *d_iwh = static_cast<T*>(*p_d_iwh);
+  GenericHeapElement &p_c_wh = fast_heap->get(nr*nr*sizeof(T));
+  T *c_wh = static_cast<T*>(*p_c_wh);
+  GenericHeapElement &p_c_iwh = fast_heap->get(nr*nr*sizeof(T));
+  T *c_iwh = static_cast<T*>(*p_c_iwh);
+
+  gpuErrChk(cudaMemcpy(d_wh, wh, nr*nr*sizeof(T), cudaMemcpyHostToDevice),
+	    "wht_tst:cudaMemcpy","");
+  gpuErrChk(cudaMemcpy(d_iwh, wh, nr*nr*sizeof(T), cudaMemcpyHostToDevice),
+	    "wht_tst:cudaMemcpy","");
+
+#endif	// __NVCC__
+
+  c_iwht(iwh, nr, nr);
+  c_wht(wh, nr, nr);
+
+  if(verbose >= 2) {
+    print_mat("WH matrix", wh, nr, nr, fmt, fmt_len);
+    print_mat("Inverse WH matrix", iwh, nr, nr, fmt, fmt_len);
+  }
+
+#ifdef __NVCC__
+  h_iwht(d_iwh, nr, nr);
+  h_wht(d_wh, nr, nr);
+
+  gpuErrChk(cudaMemcpy(c_iwh, d_iwh, nr*nr*sizeof(T), cudaMemcpyDeviceToHost),
+	    "wht_tst:cudaMemcpy","");
+  gpuErrChk(cudaMemcpy(c_wh, d_wh, nr*nr*sizeof(T), cudaMemcpyDeviceToHost),
+	    "wht_tst:cudaMemcpy","");
+
+  if(verbose >= 2) {
+    print_mat("WH matrix on GPU", c_wh, nr, nr, fmt, fmt_len);
+    print_mat("Inverse WH matrix on GPU", c_iwh, nr, nr, fmt, fmt_len);
+  }
+
+  err = cmp_vec_err(iwh, c_iwh, nr*nr);
+  printf("IWHT maximum error between CPU and GPU is: ");
+  printf(fmt, err);
+  printf("\n");
+  
+  err = cmp_vec_err(wh, c_wh, nr*nr);
+  printf("WHT maximum error between CPU and GPU is: ");
+  printf(fmt, err);
+  printf("\n");
+  			
+  p_c_iwh.discard();
+  p_c_wh.discard();
+  p_d_iwh.discard();
+  p_d_wh.discard();
+#endif	// __NVCC__
+
+  p_iwh.discard();
+  p_wh.discard();
+
+  // Begin part 2 of test
+  val = T(0);
+  GenericHeapElement &p_mtx = fast_heap->get(sz*sizeof(T));
+  T *mtx = static_cast<T*>(*p_mtx);
+  GenericHeapElement &p_rtx = fast_heap->get(sz*sizeof(T));
+  T *rtx = static_cast<T*>(*p_rtx);
+  T *p = mtx;
+  for(i=0; i<nr; i++)
+    for(j=0; j<nc; j++)
+      *p++ = val++;
+
+  if(verbose)
+    print_mat("Input Matrix", mtx, nr, nc, fmt, fmt_len);
+    
+  memcpy(rtx, mtx, sz*sizeof(T));
+  
+#ifdef __NVCC__
+  GenericHeapElement &p_d_rtx = d_fast_heap->get(sz*sizeof(T));
+  T *d_rtx = static_cast<T*>(*p_d_rtx);
+  GenericHeapElement &p_c_rtx = fast_heap->get(sz*sizeof(T));
+  T *c_rtx = static_cast<T*>(*p_c_rtx);
+
+  gpuErrChk(cudaMemcpy(d_rtx, mtx, sz*sizeof(T), cudaMemcpyHostToDevice),
+	    "wht_tst:cudaMemcpy","");
+#endif	// __NVCC__
+
+  c_iwht(rtx, nr, nc);
+
+  if(verbose)
+    print_mat("After IWHT", rtx, nr, nc, fmt, fmt_len);
+ 
+#ifdef __NVCC__
+  h_iwht(d_rtx, nr, nc);
+
+  gpuErrChk(cudaMemcpy(c_rtx, d_rtx, sz*sizeof(T), cudaMemcpyDeviceToHost),
+    "wht_tst:cudaMemcpy","");
+
+  if(verbose)
+    print_mat("After IWHT on GPU", c_rtx, nr, nc, fmt, fmt_len);
+
+  err = cmp_vec_err(c_rtx, rtx, sz);
+  printf("IWHT %lu %lu maximum error between CPU and GPU is: ", ulong(nr), ulong(nc));
+  printf(fmt, err);
+  printf("\n");
+#endif
+
+  c_wht(rtx, nr, nc);
+
+  if(verbose)
+    print_mat("After WHT", rtx, nr, nc, fmt, fmt_len);
+
+  err = cmp_vec_err(mtx, rtx, sz);
+
+#ifdef __NVCC__
+  h_wht(d_rtx, nr, nc);
+
+  gpuErrChk(cudaMemcpy(c_rtx, d_rtx, sz*sizeof(T), cudaMemcpyDeviceToHost),
+    "wht_tst:cudaMemcpy","");
+
+  if(verbose)
+    print_mat("After WHT on GPU", c_rtx, nr, nc, fmt, fmt_len);
+
+  err = cmp_vec_err(c_rtx, rtx, sz);
+  printf("WHT %lu %lu maximum error between CPU and GPU is: ", ulong(nr), ulong(nc));
+  printf(fmt, err);
+  printf("\n");
+#endif
+
+  printf("Maximum error is: ");
+  printf(fmt, err);
+  printf("\n");
+
+#ifdef __NVCC__
+  p_c_rtx.discard();
+  p_d_rtx.discard();
+#endif	// __NVCC__
+  p_mtx.discard();
+  p_rtx.discard();
+}
+
+void print_usage(const char *cmd)
+{
+  printf("USAGE:\n"
+	 "  %s [-v<verbosity] <log2(no_of_rows)> <num_cols>\n", cmd);
+  exit(EXIT_FAILURE);
+}
+
+
+int main(int argc, char *argv[])
+{
+  int bgn_arg = 1;
+  unsigned verbose = 1;		// Default value
+  char *rest;
+  
+  if(argc < 3)
+    print_usage(argv[0]);
+  else if(argv[1][0] == '-' && argv[1][1]=='v') {
+    const char *p;
+    ++bgn_arg;
+    if(strlen(argv[1]) == 2) {
+      ++bgn_arg;
+      p = argv[2];
+    }
+    else 
+      p = argv[1] + 2;
+    verbose = strtoul(p, &rest, 0);
+  }
+  if(argc != bgn_arg + 2)
+    print_usage(argv[0]);  
+  
+  size_t log2order = strtoul(argv[bgn_arg], &rest, 0);
+  if(rest[0] != '\0') {
+    fprintf(stderr, "Illegal argument %d: %s\n", bgn_arg, argv[bgn_arg]);
+    exit(EXIT_FAILURE);
+  }
+    
+  size_t nc = strtoul(argv[bgn_arg+1], &rest, 0);
+  if(rest[0] != '\0') {
+    fprintf(stderr, "Illegal argument %d: %s\n", bgn_arg+1, argv[bgn_arg+1]);
+    exit(EXIT_FAILURE);
+  }
+
+  printf("Double test:\n");
+  run_tst<double>(log2order, nc, verbose, "%10.3lE", 10);
+
+  printf("Float test:\n");
+  run_tst<float>(log2order, nc, verbose, "%10.3E", 10);
+
+  printf("long int test:\n");
+  run_tst<long>(log2order, nc, verbose, "%8ld", 8);
+
+  return 0;
+}

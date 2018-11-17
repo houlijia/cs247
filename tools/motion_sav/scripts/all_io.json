@@ -1,0 +1,18 @@
+{
+  "names":["all_cif_300"],
+  "types":[{"input":".json"}, 
+           {"mat":".mat"}, 
+           {"output":".o.yuv"},
+           {"txt":".txt"},
+           {"enc_vid":".csvid"},
+           {"cnv_enc":".cnv.csvid", "ignore":null},
+           {"cnv_mat":".cnv.mat", "ignore":null},
+           {"enc_pre_diff":".edff.yuv"},
+           {"dec_pre_diff":".ddff.yuv"},
+           {"tst_pre_diff":".dffo.yuv"},
+           {"err_pre_diff":".dffe.yuv"}],
+  "input_dir":"&pwd",
+  "output_dir":"&[pwd filesep '..' filesep 'output' filesep '*']",
+  "case_dir":"*.case",
+  "dec_dir":"tst_*"
+}

@@ -1,0 +1,122 @@
+{
+	// the .json configures the running parameters for yuvb420pcs
+	// to run 
+	// yuvb420pcs -f XXX.json
+
+	// *** adjustment: append 0 to the block in the x/y dimension
+	"adj_x" : 8,
+	"adj_y" : 8,
+
+	// *** debug flag: for debugging, it is the logical or of the following ...
+	//
+	// #define DBG_CP_DOWN             0x1
+	// #define DBG_BLKING              0x2
+	// #define DBG_WHM                 0x4
+	// #define DBG_PERM_R              0x8
+	// #define DBG_PERM_L              0x10
+	// #define DBG_INTER               0x20
+	// #define DBG_SWAP                0x40
+	// #define DBG_EXPAND              0x80
+	// #define DBG_ANALYSIS            0x100
+	// #define DBG_ED          		   0x200
+	// #define DBG_MOTION              0x400
+	// #define DBG_L1_NORM             0x800
+	// #define DBG_COPY_DONE           0x1000
+	// #define DBG_MT_IDX              0x2000
+	// #define DBG_MT_STEP0            0x4000
+	// #define DBG_MT_STEP1            0x8000
+	// #define DBG_MT_STEP2            0x10000
+	// #define DBG_MT_STEP3            0x20000
+	// #define DBG_MT_STEP4            0x40000
+	// #define DBG_C_2_I               0x80000
+	// 
+	// "dbg_flag" :
+
+	// *** mlseq permutation: if set then "permdir" also has to be set
+	"do_permutation" : 1,
+	// *** mlseq permutation: this parameter indicates the directory for the *lfsr*.dat files
+	"permdir" : "../lfsr",
+
+	// *** data input from ip camera string
+	"ipcam_string" : "http://PTSdisplay:ALUsurv@135.112.150.72:58006/axis-cgi/mjpg/video.cgi?resolution=640x480&req_fps=30&.mjpg", 
+
+	// *** input data file: currently it expects the yuv420 file format
+	// "finname" : null ;
+
+	// *** comp_ratio: percentage
+	"comp_ratio" : 10,
+
+	// -m : motion detection
+	"md_x" : 12,
+	"md_y" : 12,
+	"md_z" : 4,
+
+	// *** cube size inside the block.  this could expand to match the compression ratio
+	"cubex" : 8,
+	"cubey" : 8,
+	"cubez" : 4,
+
+	// *** frame expansion: expand the frame data on each side
+	//  so the frame size will be increased by xadd*2, yadd*2, and zadd 
+	"xadd" : 80,
+	"yadd" : 60,
+	"zadd" : 5,
+
+	// *** edge detection: the real size is edge_x|edge_y * 2 + 1
+	"edge_x" : 2,
+	"edge_y" : 2,
+
+	// -T : display threshold 
+	// "disp_th_x" :
+	// "disp_th_y" :
+
+	// *** frame size
+	"frame_x" : 640,
+	"frame_y" : 480,
+
+	// *** do not seek: set when the yuv input data has only the "y" data
+	"do_not_seek" : 1,
+
+	// *** sav output file
+	"md_outputfile" : "q.csv",
+
+	// *** output file name for all the printf
+	"foutname" : "q" ,
+
+	// *** do only one "frame"
+	// "do_one" :
+
+	// *** do output data swap to network order
+	// "do_swap" :
+
+	// *** only process the "y" part of the yuv data
+	"y_only" : 1, 
+
+	// *** overlap: overlapping of block in x/y/z dimension
+	"overlap_x" : 80,
+	"overlap_y" : 60,
+	"overlap_z" : 0,
+
+	// *** weight scheme:
+	// 	currently only support the following ...
+	//  #define NO_WEIGHT       0
+	//  #define WEIGHT_LINEAR   0x3     // if width is 2b, the weight goest from
+                // 1, 2, ..., b, b, b-1, b-2, ..., 2, 1,
+	"weight_scheme" : 3,
+
+	// *** block size
+	"x_block" : 160,
+	"y_block" : 120,
+	"z_block" : 8, 
+
+	// reconstruction
+
+	"reconstruction" : 0
+
+	// global -- not configurable ... derived
+
+	// int do_analysis ;
+	// int do_block    ;
+	// int do_comp_ratio ;
+	// int do_interpolate ;
+}

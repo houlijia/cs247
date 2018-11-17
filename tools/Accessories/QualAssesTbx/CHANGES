@@ -1,0 +1,9 @@
+21.11.2007. v1.10
+
+    * iq_measures.m (v2.10) - Support for 3D RGB image matrices, processes each component separately.
+    * image_show.m (v1.02) - Maintenance.
+    * pqs.m (v2.01) - Maintenance. 
+
+25.03.2006. v1.02
+
+    * iq_measures.m (v2.02) - Number of output arguments now specify the computation of particular measures, the functions using iq_measures.m are also changed in that regard; the description of the PSNR acronym changed; the example shown slightly modified. 

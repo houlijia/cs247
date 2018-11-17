@@ -1,0 +1,121 @@
+{
+	// this config is for analysis purpose ...
+
+	// -a : adjustment add 0 to x/y
+	"adj_x" : 8,
+	"adj_y" : 8,
+
+	// -f : debug flag :
+	// #define DBG_CP_DOWN             0x1
+	// #define DBG_BLKING              0x2
+	// #define DBG_WHM                 0x4
+	// #define DBG_PERM_R              0x8
+	// #define DBG_PERM_L              0x10
+	// #define DBG_INTER               0x20
+	// #define DBG_SWAP                0x40
+	// #define DBG_EXPAND              0x80
+	// #define DBG_ANALYSIS            0x100
+	// #define DBG_ED      		       0x200
+	// #define DBG_MOTION              0x400
+	// #define DBG_L1_NORM             0x800
+	// #define DBG_COPY_DONE           0x1000
+	// #define DBG_MT_IDX              0x2000
+	// #define DBG_MT_STEP0            0x4000
+	// #define DBG_MT_STEP1            0x8000
+	// #define DBG_MT_STEP2            0x10000
+	// #define DBG_MT_STEP3            0x20000
+	// #define DBG_MT_STEP4            0x40000
+	// #define DBG_C_2_I               0x80000
+	// "dbg_flag" :
+
+	// "dbg_flag" : "0x14",	
+
+	// -p : do :ermutation 
+	"do_permutation" : 1,
+	"permdir" : "../../../lfsr",
+
+	// -I : ip cam string
+	"video_source" : 3, // 1: ipcam 2:webcam 3:file
+	"video_src" : "/home/ldl/mr/baotou_cs/test_data/PETS2000_test.yuv", 
+
+	// -i : input data file
+	// "finname" : null ;
+
+	"do_display" : 1 ,
+	"fps" : 25,
+	"ignore_edge" : 1,
+	// -z : comp_ratio in %
+	"comp_ratio" : 25,
+
+	// -m : motion detection
+	"md_x" : 12,
+	"md_y" : 12,
+	"md_z" : 4,
+
+	// -c : cube
+	"cubex" : 8,
+	"cubey" : 8,
+	"cubez" : 4,
+
+	// -e : frame expansion
+	"xadd" : 48,
+	"yadd" : 36,
+	"zadd" : 0,
+	// "zadd" : 5,
+
+	// -g : edge
+	"edge_x" : 2,
+	"edge_y" : 2,
+
+	// -T : display threshold 
+	// "disp_th_x" :
+	// "disp_th_y" :
+
+	// -d : frame size
+	"frame_x" : 768,
+	"frame_y" : 576,
+
+	// -n : do not seek
+	"do_not_seek" : 1,
+
+	// -F : md output file
+	"md_outputfile" : "q.csv",
+
+	// -o : output file name
+	"foutname" : "q" ,
+
+	// -q
+	// "do_one" :
+
+	// "do_one" : 2,
+
+	// -s
+	// "do_swap" :
+
+	// -y
+	"y_only" : 1, 
+
+	// -O : overlap
+	"overlap_x" : 48,
+	"overlap_y" : 36,
+	"overlap_z" : 0,
+
+	// -w : weight scheme
+	"weight_scheme" : 3,
+
+	// -b : block size
+	"x_block" : 96,
+	"y_block" : 72,
+	"z_block" : 8, 
+
+	// reconstruction
+
+	"reconstruction" : 0
+
+	// global -- not configurable ... derived
+
+	// int do_analysis ;
+	// int do_block    ;
+	// int do_comp_ratio ;
+	// int do_interpolate ;
+}

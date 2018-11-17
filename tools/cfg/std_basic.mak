@@ -1,0 +1,6 @@
+include $(CFG_DIR)/gcc_basic.mak
+CC_OPTS+= -O2 -DNDEBUG=1
+CPP_OPTS+= -O2 -DNDEBUG=1
+MEX_DEFINES+= -DNDEBUG=1
+MEX_OPTS+= -O
+

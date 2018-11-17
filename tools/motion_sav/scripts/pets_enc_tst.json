@@ -1,0 +1,14 @@
+{
+  "start_frame":1,
+  "n_frames":"&inf",
+  "random":{"seed":0, "rpt_spatial":0, "rpt_temporal":1},
+  "blk_size":"&[72, 96, 8]",
+  "blk_ovrlp":"&[36,48,0]",
+  "zero_ext_f":"&[8, 8, 0]",
+  "zero_ext_b":"&[0, 0, 0]",
+  "blk_pre_diff":"&[0, 0, 0]",
+  "process_color":"&true",
+  "msrmnt_mtrx":{"type":"SensingMatrixWH","args":{}},
+  "msrmnt_input_ratio":0.10,
+  "lossless_coder":"&CSVideoCodecInputOutputData.LLC_AC"
+}

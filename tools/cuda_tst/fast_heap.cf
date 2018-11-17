@@ -1,0 +1,23 @@
+/** \file
+    Definitions for fast_heap - this is the part that is common to Cuda and
+    non-Cuda implementations.
+ */ 
+
+#include "fast_heap.h"
+
+GlobalPtr<fast_heap_t> fast_heap("fast_heap");
+
+#ifdef __NVCC__
+
+GlobalPtr<d_fast_heap_t> d_fast_heap("d_fast_heap");
+GlobalPtr<h_fast_heap_t> h_fast_heap("h_fast_heap");
+
+#endif	// __NVCC__
+
+void reset_fast_heap() {
+  fast_heap->reset();
+#ifdef __NVCC__
+  d_fast_heap->reset();
+  h_fast_heap->reset();
+#endif  
+}

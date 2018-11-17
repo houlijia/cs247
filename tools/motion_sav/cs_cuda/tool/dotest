@@ -1,0 +1,104 @@
+select FFF in reshape serial_wht3 serial_wht2 cuda_syn2_test cuda_grid_blk_test cuda_grid_test cuda_syn_test capture parser 
+do
+	break 
+done
+
+set -e
+#set -x
+
+rm -f q
+
+case $FFF in
+capture)
+	select JJJ in *.json
+	do
+		break
+	done
+
+	JJJ=`echo $JJJ | cut -f1 -d'.'`
+		
+	capture -f $JJJ.json > qq 2>&1
+	ll *.yuv qq
+	exit
+	;;
+reshape)
+	make reshape
+	#serial_wht3 10 20 serial_wht q.out 10 >q 2>&1
+	reshape > q 2>&1
+	vi q
+	;;
+serial_wht3)
+	make serial_wht3
+	#serial_wht3 10 20 serial_wht q.out 10 >q 2>&1
+	cd /home/ldl/mr/baotou_cs/test_data
+	QQQQ=`ls *.bgr | cut -f 1 -d"."`
+	select FFF in $QQQQ
+	do
+		break
+	done
+
+	ll /home/ldl/mr/baotou_cs/test_data/$FFF.bgr
+
+	cd -
+
+	rm -f $FFF.out
+
+	set -x 
+	case $FFF in
+	pic)
+		serial_wht3 640 480 /home/ldl/mr/baotou_cs/test_data/$FFF.bgr $FFF.out 15 >q 2>&1
+		;;
+	wht)
+		serial_wht3 640 480 /home/ldl/mr/baotou_cs/test_data/$FFF.bgr $FFF.out 15 >q 2>&1
+		;;
+	wht_1280x720_1)
+		serial_wht3 1280 720 /home/ldl/mr/baotou_cs/test_data/$FFF.bgr $FFF.out 15 >q 2>&1
+		;;
+	wht_1280x720)
+		serial_wht3 1280 720 /home/ldl/mr/baotou_cs/test_data/$FFF.bgr $FFF.out 15 >q 2>&1
+		;;
+	esac
+	set +x
+
+	datab2a_2 -i $FFF.out > $FFF.matlab
+	vi $FFF.matlab
+
+	ll $FFF.out $FFF.matlab
+
+	echo -n "vi q ==> "
+	read x
+	vi q
+	;;
+serial_wht2)
+	make serial_wht2
+	serial_wht2 10 20 >q 2>&1
+	vi q
+	;;
+cuda_grid_blk_test)
+	make cuda_grid_blk_test
+	cuda_grid_blk_test >q 2>&1
+	vi q
+	;;
+cuda_syn2_test)
+	make cuda_syn2_test
+	cuda_syn2_test >q 2>&1
+	vi q
+	;;
+cuda_grid_test)
+	make cuda_grid_test
+	cuda_grid_test >q 2>&1
+	vi q
+	;;
+cuda_syn_test)
+	make cuda_syn_test
+	cuda_syn_test >q 2>&1
+	vi q
+	;;
+parser)
+	parser /tmp/all*svid > qq 2>&1
+	vi qq
+	exit
+	;;
+esac
+
+set +x

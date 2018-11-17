@@ -1,0 +1,175 @@
+/**
+   \file 
+
+   MEX functions to perform quantization. 
+ */
+
+#include "mex.h"
+#ifdef __NVCC__
+#include "gpu/mxGPUArray.h"
+#endif
+
+#include "mex_tools.h"
+#include "mex_assert.h"
+#if HAS_GPU
+#include "CudaDevInfo.h"
+#include "mex_gpu_tools.h"
+#endif
+
+#include "CodeDest.h"
+#include "fast_heap.h"
+#include "mex_context.h"
+
+static char const * const errId = "encodeNumber_mex:InvalidInput";
+static char const * const errIdAlloc = "encodeNumber_mex:Allocation";
+static char const * const errIdMemcpy = "encodeNumber_mex:Memcpy";
+
+/**
+   This MEX functions performs floating point encoding. 
+   Input:
+     prhs[0] - (vec) input data for encoding. May be either on CPU or GPU
+               type should be \c single or \c double.
+   Output:
+     plhs[0] - (code) the coded data (uint_8, always on CPU).
+ */
+
+void mexFunction(int nlhs, mxArray *plhs[],
+                 int nrhs, mxArray const *prhs[])
+{
+  mxClassID class_id;
+  size_t n_vec;
+  const void *p_src_vec;
+  double *mnts;
+  int *expnt;
+  size_t *mnts_ends;
+  GenericHeapElement *pp_mnts, *pp_expnt, *pp_mnts_ends;
+  size_t *expnt_ends;
+  size_t mnts_code_len;
+  size_t code_len;
+  unsigned char *p_code;
+#if HAS_GPU
+  GenericHeapElement *pp_p_code;
+#endif
+
+  mex_assert((nrhs==1 && nlhs==1), (errId,"Expected exactly 1 input and 1 output"));
+
+#if HAS_GPU
+  bool on_gpu = mxIsGPUArray(prhs[0]);
+  const mxGPUArray *pg = NULL;
+#else
+  bool on_gpu = false;
+#endif
+  if(!on_gpu) {
+    n_vec = (size_t) mxGetNumberOfElements(prhs[0]);
+    class_id = mxGetClassID(prhs[0]);
+    mex_assert(!mxIsComplex(prhs[0]), (errId, "input cannot be complex"));
+    mex_assert((class_id==mxDOUBLE_CLASS || class_id==mxSINGLE_CLASS),
+	       (errId, "input must be of type double or single"));
+
+    if(n_vec) {
+      
+      p_src_vec = mxGetData(prhs[0]);
+      pp_mnts = & fast_heap->get(n_vec*sizeof(*mnts));
+      mnts = static_cast<double*>(**pp_mnts);
+
+      pp_expnt = & fast_heap->get(n_vec*sizeof(*expnt));
+      expnt = static_cast<int*>(**pp_expnt);
+
+      pp_mnts_ends = & fast_heap->get(2*n_vec*sizeof(*mnts_ends));
+      mnts_ends = static_cast<size_t*>(**pp_mnts_ends);
+
+      mex_assert((mnts != NULL && expnt != NULL && mnts_ends != NULL),
+		 (errIdAlloc,
+		  "Failed to allocate space for internal variables on %s",
+		  on_gpu? "GPU":"CPU"));
+    }
+    else {
+      plhs[0] = mxCreateNumericMatrix(1, 0, mxUINT8_CLASS, mxREAL);
+      return;
+    }
+  }
+#if HAS_GPU
+  else {
+    pg = mxGPUCreateFromMxArray(prhs[0]);
+    n_vec = (size_t) mxGPUGetNumberOfElements(pg);
+    class_id = mxGPUGetClassID(pg);
+    mex_assert((mxGPUGetComplexity(pg) == mxREAL),
+	       (errId, "input cannot be complex"));
+    mex_assert((class_id==mxDOUBLE_CLASS || class_id==mxSINGLE_CLASS),
+	       (errId, "input must be of type double or single"));
+
+    if(n_vec) {
+      p_src_vec = mxGPUGetDataReadOnly(pg);
+      pp_mnts = & d_fast_heap->get(n_vec*sizeof(*mnts));
+      mnts = static_cast<double*>(**pp_mnts);
+
+      pp_expnt = & d_fast_heap->get(n_vec*sizeof(*expnt));
+      expnt = static_cast<int*>(**pp_expnt);
+
+      pp_mnts_ends = & d_fast_heap->get(2*n_vec*sizeof(*mnts_ends));
+      mnts_ends = static_cast<size_t*>(**pp_mnts_ends);
+    }
+    else {
+      mxGPUDestroyGPUArray(pg);
+      plhs[0] = mxCreateNumericMatrix(1, 0, mxUINT8_CLASS, mxREAL);
+      return;
+    }
+  }
+#endif
+
+  expnt_ends = mnts_ends + n_vec;
+
+  // compute mantissa and exponent
+  if(class_id == mxDOUBLE_CLASS) {
+    CodeDest::integerizeNumber(n_vec, (double *)p_src_vec, on_gpu,
+			       mnts, expnt);
+  }
+  else {
+    CodeDest::integerizeNumber(n_vec, (float *)p_src_vec, on_gpu,
+			       mnts, expnt);
+  }
+  
+  CodeDest::endIndxSInt(n_vec, mnts, on_gpu, mnts_ends);
+  CodeDest::endIndxSInt(n_vec, expnt, on_gpu, expnt_ends);
+
+  mnts_code_len = CodeDest::codeLen(n_vec, mnts_ends, on_gpu);
+  code_len = mnts_code_len +
+     CodeDest::codeLen(n_vec, expnt_ends, on_gpu);
+    
+  // Create output
+  plhs[0] = mxCreateNumericMatrix(1, code_len, mxUINT8_CLASS, mxREAL);
+  mex_assert((plhs[0] != NULL), (errIdAlloc, "Failed to allocate %lu uint8 for output",
+				 (unsigned long) code_len));
+
+  // Set p_code
+  if(!on_gpu) {
+    p_code = (unsigned char *) mxGetData(plhs[0]);
+  }
+#if HAS_GPU
+  else {
+    pp_p_code = & d_fast_heap->get(code_len*sizeof(*p_code));
+    p_code = static_cast<unsigned char *>(**pp_p_code);
+  }
+#endif
+  mex_assert((p_code != NULL), (errIdAlloc, "Failed to allocate %lu uint8 for p_code",
+				(unsigned long) code_len));
+  
+  // Compute code
+  CodeDest::encodeSInt(n_vec, mnts, on_gpu, mnts_ends, p_code);
+  CodeDest::encodeSInt(n_vec, expnt, on_gpu, expnt_ends, p_code + mnts_code_len);
+ 
+  // Clean up and free memory
+#if HAS_GPU
+  if(on_gpu) {
+    gpuErrChk(cudaMemcpy(mxGetData(plhs[0]), p_code, code_len*sizeof(*p_code),
+			 cudaMemcpyDeviceToHost), errIdMemcpy, "");
+   mxGPUDestroyGPUArray(pg);
+   pp_p_code->discard();
+  }
+#endif
+
+  pp_mnts_ends->discard();
+  pp_expnt->discard();
+  pp_mnts->discard();
+}
+ 

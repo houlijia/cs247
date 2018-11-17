@@ -1,0 +1,93 @@
+****** What is PQS?
+
+The Picture Quality Scale (PQS) is a still image quality metric for
+the evaluation of images resulting from common encoding techniques.
+It correlates well with the subjective mean opinion score (MOS), as
+determined by human observers.  For more information on its design and
+behavior, see the accompanying paper "Objective Quality Scale (PQS)
+for Image Coding" by M. Miyahara, K. Kotani and V. R. Algazi, which is
+under review for publication in the IEEE Transactions on
+Communications and can be found in the doc subdirectory.  It can also
+be found at http://info.cipic.ucdavis.edu/scripts/reportPage?96-12.
+
+****** An implementation of PQS:
+
+In the src subdirectory, you will find an implementation of PQS.  This
+code can also be found at 
+http://info.cipic.ucdavis.edu/scripts/reportPage?96-12 and in the
+ftp://info.cipic.ucdavis.edu/pub/cipic/code/pqs directory. It
+faithfully implements the methodology described in the paper, but must
+not be used blindly.  In the next few paragraphs we outline
+the limitations of this implementation and caution the user as to
+potential pitfalls.  We hope that the software will be useful and will
+stimulate interest in image quality metrics, but at the same time
+don't want users to be overly optimistic as to its capabilities.
+
+If you use this code, please refer to it as CIPIC PQS version 1.  See the
+accompanying COPYRIGHT file for more details.
+
+The PQS methodology appears to have fairly wide applicability to
+quality assessment in image processing, but the specific algorithm has
+definite limitations. This is principally due to the use of multiple
+regression to determine a single metric based on several distortion
+factors. The relative importance or weights of these factors to a single 
+measure is dependent both on the image and coding algorithm.
+
+1. PQS is a quality metric for picture coding, and is designed to
+provide results independent of the image, and to a lesser extent of
+the coding technique.
+
+2. PQS was designed and tested on 256 x 256 images.  Although some
+care has been exercised in making the factors scale with image size
+and resolution, its use with other than 256 x 256 images at 4 times
+picture height is shaky.  We plan to carefully reexamine the factor
+computations and release a revision of the PQS code that will
+explicitly allow for changes in image size and viewing distance.  This
+is not as simple as it seems since it may require calibrated MOS test
+data for a new test set.
+
+3. The regression coefficients used in PQS restricts its applicability
+to data within the range of the test set.  That means that if any of
+the weighted distortion factor values are outside the range of the MOS
+scale [0,5], the PQS evaluation has little meaning.  However, a clear
+statement can generally be made about the quality of the image when
+weighted distortion factor values exceed their limits, i.e. the image
+quality is poor.  Warnings are issued when the weighted contributions
+are beyond the range of values obtained during the design of PQS.
+
+4. The MOS subjective quality scale was designed for fairly high
+quality images and video. The MOS scale does provide enough
+differentiation of quality at the low end of the scale and will
+uniformly assign very low scores.  The problem of limited range
+subjective quality scales is now being addressed at CIPIC
+(http://info.cipic.ucdavis.edu).
+
+5. Some work has also been done on a color version of PQS, and the
+corresponding code will be published.  See
+http://info.cipic.ucdavis.edu/scripts/reportPage?95-11.
+
+6. We encourage comments and feedback on the paper and the algorithm,
+and will respond if possible.  We also foresee constructing a FAQ, as
+necessary.  Please report any problems with the code, so we can
+improve the quality of the distribution.
+
+7. This is PQS v1.0.  If you so indicate by e-mail, we will keep you
+posted when new versions are released.
+
+8. Related activities can be found in our home page
+(http://info.cipic.ucdavis.edu) and in the home page of HIQNET
+(http://www.jaist.ac.jp/~kan/HIQNET_English.html), a international 
+work-group in the area of high quality imaging.  A CIPIC HIQNET Web page is
+also in preparation. 
+
+A conference on Very High Quality and Resolution Imaging, as
+part of the SPIE Electronic Imaging Symposium in San Jose, will be
+held in February 1997.
+
+***** More information:
+
+For more information on PQS and related activities at CIPIC, please
+see our Web site: http://info.cipic.ucdavis.edu, or contact us directly:
+
+  Robert Estes, estes@cipic.ucdavis.edu
+  V. Ralph Algazi, vralgazi@ucdavis.edu

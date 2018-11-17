@@ -1,0 +1,139 @@
+function set_mex_path(cfg, arch, root)
+  % Set path for Mex function while keeping the normal path for Matlab
+  % functions.
+  %
+  % Mex executable file are stored in the following way:
+  %   ROOT/mex/<cfg>/<architecture>/exe
+  % where ROOT is the root of the directory tree (e.g. trunk), <cfg> is the name
+  % of the Mex build configuration ((configuration file name without the
+  % '.mak' extension) and <arch> is a string representing the hardware
+  % and software architecture as well as the Matlab version and possibly the MEX
+  % compiler. Usually <arch> consists of the outputs of 'uname -m', 
+  % 'uname -s', the Matlab version string and possibly the compiler version ('vc'
+  % for Visual C, 'gw' form MinGW), joined by a '-'. If the parameter <arch>
+  % begins with '...', then it specifies the end part of the architecture
+  % string.
+  % There may be multiple build configurations and multiple architectures.
+  % The function selects one of them, togehter with all matlab files under ROOT,
+  % and sets it is the path.
+  %
+  %   cfg - Name of mex build configuration 
+  %   arch - (optional) all or part of the architecture name. In Windows, if
+  %          there is more than one architecture a default of '-vc' is assumed.
+  %   root - (optional) the root directory
+  
+  curdir = pwd();
+  
+  if nargin < 2
+    if isunix()
+      arch = 'Linux';
+    else
+      arch = [];
+    end
+  end
+  
+  if nargin >= 3
+    cd(root);
+  else
+    [mpath,~,~] = fileparts(mfilename('fullpath'));
+    cd(mpath)
+    cd ..
+  end
+  root = pwd;
+  fsep = regexprep(filesep, '\\','\\\\'); % / or \\
+  root = regexprep(root, [fsep '$'], '');  % remove trailing file separator
+  
+  gpath = genpath(root);
+  gpath = regexprep(gpath, [pathsep '$'], '');
+  dirs = strsplit(gpath, pathsep);
+  
+  % Remove motion_sav from path
+  tst_ptrn = [regexprep(root, '\\','\\\\') fsep 'motion_sav' '(' fsep '.*)?$'];
+  is_tst = regexp(dirs, tst_ptrn);
+  is_tst = cellfun(@(x) ~isempty(x), is_tst);
+  dirs(is_tst) = [];
+
+  % Remove tst directories
+  tst_ptrn = [regexprep(root, '\\','\\\\') fsep 'tst' '(' fsep '.*)?$'];
+  is_tst = regexp(dirs, tst_ptrn);
+  is_tst = cellfun(@(x) ~isempty(x), is_tst);
+  dirs(is_tst) = [];
+
+  % Extract mex directories
+  mex_ptrn = [regexprep(root, '\\','\\\\') fsep 'mex' '(' fsep '.*)?$'];
+  is_mex = regexp(dirs, mex_ptrn);
+  is_mex = cellfun(@(x) ~isempty(x), is_mex);
+  mex_dirs = dirs(is_mex);
+  dirs(is_mex) = [];
+
+  % extract directories matching the configuration
+  mex_ptrn = [regexprep(root, '\\','\\\\') fsep 'mex' fsep cfg fsep];
+  is_mex = regexp(mex_dirs, mex_ptrn);
+  is_mex = cellfun(@(x) ~isempty(x), is_mex);
+  mex_dirs = mex_dirs(is_mex);
+  
+  % Find architectures
+  arctcts = regexprep(mex_dirs, mex_ptrn, '');
+  arctcts = regexprep(arctcts, [fsep '.*$'], '');
+  
+  % Match arch argument if available
+  if ~isempty(arch)
+    if regexp(arch, '^[.][.][.]')
+      is_arch = regexp(arctcts, [regexprep(arch, '^[.][.][.]',''), '$']);
+    else
+      is_arch = regexp(arctcts, arch);
+    end
+    is_arch = cellfun(@(x) ~isempty(x), is_arch);
+    arctcts = arctcts(is_arch);
+  end
+  
+  arctcts = unique(arctcts(:));
+  if isempty(arctcts)
+    cd(curdir);
+    error('No suitable architecture found');
+  elseif numel(arctcts) > 1
+    too_many = true;
+    if ispc() && nargin < 2
+      is_arch = regexp(arctcts, '-vc');
+      is_arch = cellfun(@(x) ~isempty(x), is_arch);
+      if length(find(is_arch)) == 1
+        arctcts = arctcts(is_arch);
+        too_many = false;
+      end
+    end
+    if too_many
+      cd(curdir);
+      fprintf('possible architectures:\n');
+      fprintf('%s\n', arctcts{:});
+      error('Too many possible architectures');
+    end
+  end
+  
+  mex_ptrn = regexprep(mex_ptrn, '\\\\', '\\');
+  mex_exe = [ mex_ptrn arctcts{1} filesep 'exe'];
+  
+  
+  restoredefaultpath();
+  if ~any(strcmp(regexprep(dirs, ['.*mlseq' filesep '?$'],'mlseq'),'mlseq'))
+    ppwd = '';
+    mlseq = '';
+    while ~strcmp(ppwd, pwd)
+      d = dir('.');
+      if any(strcmp({d(:).name},'mlseq'))
+        mlseq = [pwd filesep 'mlseq'];
+        break;
+      end
+      ppwd = pwd;
+      cd ..
+    end
+    if isempty(mlseq)
+      cd(curdir)
+      error('could not find mlseq');
+    end
+    path(mlseq, path());
+  end
+  dirs = [dirs(:) ; {mex_exe}];
+  path(strjoin(dirs, pathsep), path());  
+  cd(curdir)
+end
+

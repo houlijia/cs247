@@ -1,0 +1,364 @@
+Fri Jan  2 13:31:51 EST 2015
+cs_domultivec_test
+---------------------------------------------------
+dbg_p_d_data_f: before do size 32 dp 0x1300200000
+dbg_pdata_f: before do
+0 -- 1.000000
+1 -- 1.500000
+2 -- 2.000000
+3 -- 2.500000
+4 -- 3.000000
+5 -- 3.500000
+6 -- 4.000000
+7 -- 4.500000
+dbg_p_d_data_i: k1 size 32 dp 0x1300200200
+dbg_pdata_i: k1
+0 -- 00000005 5
+1 -- 00000002 2
+2 -- 00000006 6
+3 -- 00000007 7
+4 -- 00000004 4
+5 -- 00000000 0
+6 -- 00000001 1
+7 -- 00000003 3
+dbg_p_d_data_i: k2 size 32 dp 0x1300200220
+dbg_pdata_i: k2
+0 -- 00000002 2
+1 -- 00000005 5
+2 -- 00000004 4
+3 -- 00000006 6
+4 -- 00000003 3
+5 -- 00000007 7
+6 -- 00000000 0
+7 -- 00000001 1
+h_do_multi_vec: din 0x1300200000 dout 0x1300200020 dtmp 0x1300200040 Rperm 0x1300200200 Lperm 0x1300200220 tblsize 5 size 8
+dbg_p_d_data_i: Right perm size 32 dp 0x1300200200
+dbg_pdata_i: Right perm
+0 -- 00000005 5
+1 -- 00000002 2
+2 -- 00000006 6
+3 -- 00000007 7
+4 -- 00000004 4
+5 -- 00000000 0
+6 -- 00000001 1
+7 -- 00000003 3
+dbg_p_d_data_f: input size 32 dp 0x1300200000
+dbg_pdata_f: input
+0 -- 1.000000
+1 -- 1.500000
+2 -- 2.000000
+3 -- 2.500000
+4 -- 3.000000
+5 -- 0.000000
+6 -- 0.000000
+7 -- 0.000000
+h_do_permutation_generic_f1: din 0x1300200000 dout 0x1300200040 perm 0x1300200200 tblsize 8
+dbg_p_d_data_f: h_do_permutation_generic_f1 perm before size 32 dp 0x1300200000
+dbg_pdata_f: h_do_permutation_generic_f1 perm before
+0 -- 1.000000
+1 -- 1.500000
+2 -- 2.000000
+3 -- 2.500000
+4 -- 3.000000
+5 -- 0.000000
+6 -- 0.000000
+7 -- 0.000000
+dbg_p_d_data_f: h_do_permutation_generic_f1 perm after size 32 dp 0x1300200040
+dbg_pdata_f: h_do_permutation_generic_f1 perm after
+0 -- 0.000000
+1 -- 0.000000
+2 -- 1.500000
+3 -- 0.000000
+4 -- 3.000000
+5 -- 1.000000
+6 -- 2.000000
+7 -- 2.500000
+dbg_p_d_data_f: input after R perm size 32 dp 0x1300200040
+dbg_pdata_f: input after R perm
+0 -- 0.000000
+1 -- 0.000000
+2 -- 1.500000
+3 -- 0.000000
+4 -- 3.000000
+5 -- 1.000000
+6 -- 2.000000
+7 -- 2.500000
+dbg_p_d_data_f: input after whm size 32 dp 0x1300200040
+dbg_pdata_f: input after whm
+0 -- 10.000000
+1 -- 3.000000
+2 -- -2.000000
+3 -- 1.000000
+4 -- -7.000000
+5 -- 0.000000
+6 -- -1.000000
+7 -- -4.000000
+dbg_p_d_data_i: Left perm size 32 dp 0x1300200200
+dbg_pdata_i: Left perm
+0 -- 00000005 5
+1 -- 00000002 2
+2 -- 00000006 6
+3 -- 00000007 7
+4 -- 00000004 4
+5 -- 00000000 0
+6 -- 00000001 1
+7 -- 00000003 3
+h_do_permutation_generic_f2: din 0x1300200040 dout 0x1300200020 perm 0x1300200220 size 8 tblsize -831385552
+dbg_p_d_data_f: input after L perm size 32 dp 0x1300200040
+dbg_pdata_f: input after L perm
+0 -- 10.000000
+1 -- 3.000000
+2 -- -2.000000
+3 -- 1.000000
+4 -- -7.000000
+5 -- 0.000000
+6 -- -1.000000
+7 -- -4.000000
+dbg_p_d_data_f: output after L perm size 32 dp 0x1300200020
+dbg_pdata_f: output after L perm
+0 -- -2.000000
+1 -- 0.000000
+2 -- -7.000000
+3 -- -1.000000
+4 -- 1.000000
+5 -- -4.000000
+6 -- 10.000000
+7 -- 3.000000
+dbg_p_d_data_f: after do size 32 dp 0x1300200020
+dbg_pdata_f: after do
+0 -- -2.000000
+1 -- 0.000000
+2 -- -7.000000
+3 -- -1.000000
+4 -- 1.000000
+5 -- -4.000000
+6 -- 10.000000
+7 -- 3.000000
+h_do_multi_vec: din 0x1300200000 dout 0x1300200020 dtmp 0x1300200040 Rperm 0x1300200200 Lperm 0x1300200220 tblsize 5 size 8
+dbg_p_d_data_i: Right perm size 32 dp 0x1300200200
+dbg_pdata_i: Right perm
+0 -- 00000005 5
+1 -- 00000002 2
+2 -- 00000006 6
+3 -- 00000007 7
+4 -- 00000004 4
+5 -- 00000000 0
+6 -- 00000001 1
+7 -- 00000003 3
+dbg_p_d_data_f: input size 32 dp 0x1300200000
+dbg_pdata_f: input
+0 -- 1.000000
+1 -- 1.500000
+2 -- 2.000000
+3 -- 2.500000
+4 -- 3.000000
+5 -- 0.000000
+6 -- 0.000000
+7 -- 0.000000
+h_do_permutation_generic_f1: din 0x1300200000 dout 0x1300200040 perm 0x1300200200 tblsize 8
+dbg_p_d_data_f: h_do_permutation_generic_f1 perm before size 32 dp 0x1300200000
+dbg_pdata_f: h_do_permutation_generic_f1 perm before
+0 -- 1.000000
+1 -- 1.500000
+2 -- 2.000000
+3 -- 2.500000
+4 -- 3.000000
+5 -- 0.000000
+6 -- 0.000000
+7 -- 0.000000
+dbg_p_d_data_f: h_do_permutation_generic_f1 perm after size 32 dp 0x1300200040
+dbg_pdata_f: h_do_permutation_generic_f1 perm after
+0 -- 0.000000
+1 -- 0.000000
+2 -- 1.500000
+3 -- 0.000000
+4 -- 3.000000
+5 -- 1.000000
+6 -- 2.000000
+7 -- 2.500000
+dbg_p_d_data_f: input after R perm size 32 dp 0x1300200040
+dbg_pdata_f: input after R perm
+0 -- 0.000000
+1 -- 0.000000
+2 -- 1.500000
+3 -- 0.000000
+4 -- 3.000000
+5 -- 1.000000
+6 -- 2.000000
+7 -- 2.500000
+dbg_p_d_data_f: input after whm size 32 dp 0x1300200040
+dbg_pdata_f: input after whm
+0 -- 10.000000
+1 -- 3.000000
+2 -- -2.000000
+3 -- 1.000000
+4 -- -7.000000
+5 -- 0.000000
+6 -- -1.000000
+7 -- -4.000000
+dbg_p_d_data_i: Left perm size 32 dp 0x1300200200
+dbg_pdata_i: Left perm
+0 -- 00000005 5
+1 -- 00000002 2
+2 -- 00000006 6
+3 -- 00000007 7
+4 -- 00000004 4
+5 -- 00000000 0
+6 -- 00000001 1
+7 -- 00000003 3
+h_do_permutation_generic_f2: din 0x1300200040 dout 0x1300200020 perm 0x1300200220 size 8 tblsize -831385552
+dbg_p_d_data_f: input after L perm size 32 dp 0x1300200040
+dbg_pdata_f: input after L perm
+0 -- 10.000000
+1 -- 3.000000
+2 -- -2.000000
+3 -- 1.000000
+4 -- -7.000000
+5 -- 0.000000
+6 -- -1.000000
+7 -- -4.000000
+dbg_p_d_data_f: output after L perm size 32 dp 0x1300200020
+dbg_pdata_f: output after L perm
+0 -- -2.000000
+1 -- 0.000000
+2 -- -7.000000
+3 -- 0.000000
+4 -- 0.000000
+5 -- 0.000000
+6 -- 0.000000
+7 -- 0.000000
+dbg_p_d_data_f: after do size 32 dp 0x1300200020
+dbg_pdata_f: after do
+0 -- -2.000000
+1 -- 0.000000
+2 -- -7.000000
+3 -- 0.000000
+4 -- 0.000000
+5 -- 0.000000
+6 -- 0.000000
+7 -- 0.000000
+------------------------------------------------------------------------
+dbg_p_d_data_f: TRANS:before do size 32 dp 0x1300200000
+dbg_pdata_f: TRANS:before do
+0 -- 1.000000
+1 -- 1.500000
+2 -- 2.000000
+3 -- 2.500000
+4 -- 3.000000
+5 -- 3.500000
+6 -- 4.000000
+7 -- 4.500000
+dbg_p_d_data_i: TRANS k1 size 32 dp 0x1300200200
+dbg_pdata_i: TRANS k1
+0 -- 00000005 5
+1 -- 00000002 2
+2 -- 00000006 6
+3 -- 00000007 7
+4 -- 00000004 4
+5 -- 00000000 0
+6 -- 00000001 1
+7 -- 00000003 3
+dbg_p_d_data_i: TRANS k2 size 32 dp 0x1300200220
+dbg_pdata_i: TRANS k2
+0 -- 00000002 2
+1 -- 00000005 5
+2 -- 00000004 4
+3 -- 00000006 6
+4 -- 00000003 3
+5 -- 00000007 7
+6 -- 00000000 0
+7 -- 00000001 1
+h_do_multi_trnsp_vec: din 0x1300200000 dout 0x1300200020 Rperm 0x1300200200 Lperm 0x1300200220 tblsize 8
+h_do_multi_trnsp_vec: din 0x1300200000 dout 0x1300200020 Rperm 0x1300200200 Lperm 0x1300200220 tblsize 8
+dbg_p_d_data_i: Right perm size 32 dp 0x1300200200
+dbg_pdata_i: Right perm
+0 -- 00000005 5
+1 -- 00000002 2
+2 -- 00000006 6
+3 -- 00000007 7
+4 -- 00000004 4
+5 -- 00000000 0
+6 -- 00000001 1
+7 -- 00000003 3
+dbg_p_d_data_f: input size 32 dp 0x1300200000
+dbg_pdata_f: input
+0 -- 1.000000
+1 -- 1.500000
+2 -- 2.000000
+3 -- 2.500000
+4 -- 3.000000
+5 -- 3.500000
+6 -- 4.000000
+7 -- 4.500000
+h_do_permutation_generic_f1: din 0x1300200000 dout 0x1300200020 perm 0x1300200220 tblsize 8
+dbg_p_d_data_f: h_do_permutation_generic_f1 perm before size 32 dp 0x1300200000
+dbg_pdata_f: h_do_permutation_generic_f1 perm before
+0 -- 1.000000
+1 -- 1.500000
+2 -- 2.000000
+3 -- 2.500000
+4 -- 3.000000
+5 -- 3.500000
+6 -- 4.000000
+7 -- 4.500000
+dbg_p_d_data_f: h_do_permutation_generic_f1 perm after size 32 dp 0x1300200020
+dbg_pdata_f: h_do_permutation_generic_f1 perm after
+0 -- 4.000000
+1 -- 4.500000
+2 -- 1.000000
+3 -- 3.000000
+4 -- 2.000000
+5 -- 1.500000
+6 -- 2.500000
+7 -- 3.500000
+dbg_p_d_data_f: input after R perm size 32 dp 0x1300200020
+dbg_pdata_f: input after R perm
+0 -- 4.000000
+1 -- 4.500000
+2 -- 1.000000
+3 -- 3.000000
+4 -- 2.000000
+5 -- 1.500000
+6 -- 2.500000
+7 -- 3.500000
+dbg_p_d_data_f: input after R perm size 32 dp 0x1300200020
+dbg_pdata_f: input after R perm
+0 -- 2.750000
+1 -- -0.375000
+2 -- 0.250000
+3 -- 0.375000
+4 -- 0.375000
+5 -- -0.250000
+6 -- 0.875000
+7 -- 0.000000
+dbg_p_d_data_i: Left perm size 32 dp 0x1300200200
+dbg_pdata_i: Left perm
+0 -- 00000005 5
+1 -- 00000002 2
+2 -- 00000006 6
+3 -- 00000007 7
+4 -- 00000004 4
+5 -- 00000000 0
+6 -- 00000001 1
+7 -- 00000003 3
+h_do_permutation_generic_f2: din 0x1300200020 dout 0x1300200000 perm 0x1300200200 size 8 tblsize -831385552
+dbg_p_d_data_f: input after L perm size 32 dp 0x1300200000
+dbg_pdata_f: input after L perm
+0 -- -0.250000
+1 -- 0.250000
+2 -- 0.875000
+3 -- 0.000000
+4 -- 0.375000
+5 -- 2.750000
+6 -- -0.375000
+7 -- 0.375000
+dbg_p_d_data_f: TRANS after do size 32 dp 0x1300200000
+dbg_pdata_f: TRANS after do
+0 -- -0.250000
+1 -- 0.250000
+2 -- 0.875000
+3 -- 0.000000
+4 -- 0.375000
+5 -- 2.750000
+6 -- -0.375000
+7 -- 0.375000

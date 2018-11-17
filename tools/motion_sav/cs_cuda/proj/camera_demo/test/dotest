@@ -1,0 +1,48 @@
+date > q
+cat q
+
+set -e
+
+cd cs_misc
+pwd
+make
+
+cd camera_demo
+pwd
+make
+
+cd test
+pwd
+make
+
+set +e
+
+select TEE in i_recon_test i_server_test
+do
+	break ;
+done
+
+case $TEE in
+i_recon_test)
+
+	echo "[1]=denoising test [2]=GAP test [3]=reconstruct test"
+	select iii in 1 2 3
+	do
+		break
+	done
+
+	i_recon_test $iii >> q
+
+	echo -n "vi q ==> "
+	read x
+	vi q
+	;;
+i_server_test)
+
+	i_server_test  >> q
+
+	echo -n "vi q ==> "
+	read x
+	vi q
+	;;
+esac
